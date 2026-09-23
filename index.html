@@ -1,0 +1,1262 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brújula de Interacción</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --bg:#f5f1e7; --bg-raised:#fffdf8; --surface:#ffffff;
+    --ink:#1e2430; --ink-soft:#4c5666; --ink-faint:#7c8798;
+    --navy:#26344a; --navy-deep:#16202f;
+    --gold:#a9761f; --gold-strong:#8a611a;
+    --terracotta:#a8492b;
+    --rule:#ded2b3;
+    --surface-strong:#16202f; --surface-strong-text:#f5f1e7;
+
+    --box-neutral-bg:#ffffff; --box-neutral-border:#ded2b3; --box-neutral-label:#26344a;
+    --box-accent-bg:#f1e6cd; --box-accent-border:#ded2b3; --box-accent-label:#8a611a;
+    --box-info-bg:#e6eaf1; --box-info-border:#26344a; --box-info-label:#26344a; --box-info-text:#16202f;
+    --box-good-bg:#e3edde; --box-good-border:#4b7f52; --box-good-label:#365c3b; --box-good-text:#2f4f33;
+    --box-warn-bg:#faedd4; --box-warn-border:#c97a2e; --box-warn-label:#8a5312; --box-warn-text:#7a4a15;
+    --box-danger-bg:#f6e2da; --box-danger-border:#a8492b; --box-danger-label:#8a3a22; --box-danger-text:#7a331e;
+
+    color-scheme: light;
+    --shadow: 0 1px 2px rgba(22,32,47,.06), 0 8px 24px -12px rgba(22,32,47,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#11151d; --bg-raised:#161c27; --surface:#1a2129;
+      --ink:#ece7da; --ink-soft:#b7bfcd; --ink-faint:#8993a4;
+      --navy:#c7d0de; --navy-deep:#0d1119;
+      --gold:#d6a94f; --gold-strong:#e6bf72;
+      --terracotta:#d68563;
+      --rule:#333d4d;
+      --surface-strong:#232c3c; --surface-strong-text:#f1ead6;
+
+      --box-neutral-bg:#1a2129; --box-neutral-border:#333d4d; --box-neutral-label:#cfd8e6;
+      --box-accent-bg:#241f16; --box-accent-border:#4a3c22; --box-accent-label:#e6bf72;
+      --box-info-bg:#1d2636; --box-info-border:#3c4a63; --box-info-label:#cfe0ff; --box-info-text:#e7edf8;
+      --box-good-bg:#182b1c; --box-good-border:#3e6a44; --box-good-label:#8fc298; --box-good-text:#bcdcc0;
+      --box-warn-bg:#2b2013; --box-warn-border:#7a5320; --box-warn-label:#e0aa5c; --box-warn-text:#e5c38d;
+      --box-danger-bg:#2b1813; --box-danger-border:#7a3b26; --box-danger-label:#e08b6c; --box-danger-text:#e6ab92;
+
+      color-scheme: dark;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#11151d; --bg-raised:#161c27; --surface:#1a2129;
+    --ink:#ece7da; --ink-soft:#b7bfcd; --ink-faint:#8993a4;
+    --navy:#c7d0de; --navy-deep:#0d1119;
+    --gold:#d6a94f; --gold-strong:#e6bf72;
+    --terracotta:#d68563;
+    --rule:#333d4d;
+    --surface-strong:#232c3c; --surface-strong-text:#f1ead6;
+
+    --box-neutral-bg:#1a2129; --box-neutral-border:#333d4d; --box-neutral-label:#cfd8e6;
+    --box-accent-bg:#241f16; --box-accent-border:#4a3c22; --box-accent-label:#e6bf72;
+    --box-info-bg:#1d2636; --box-info-border:#3c4a63; --box-info-label:#cfe0ff; --box-info-text:#e7edf8;
+    --box-good-bg:#182b1c; --box-good-border:#3e6a44; --box-good-label:#8fc298; --box-good-text:#bcdcc0;
+    --box-warn-bg:#2b2013; --box-warn-border:#7a5320; --box-warn-label:#e0aa5c; --box-warn-text:#e5c38d;
+    --box-danger-bg:#2b1813; --box-danger-border:#7a3b26; --box-danger-label:#e08b6c; --box-danger-text:#e6ab92;
+
+    color-scheme: dark;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+  }
+
+  /* ============ BASE ============ */
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg); color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size:16px; line-height:1.55;
+  }
+  h1,h2,h3{font-family:"Fraunces", Georgia, serif; text-wrap:balance; color:var(--ink); margin:0;}
+  a{color:var(--gold-strong);}
+  .mono{font-family:"IBM Plex Mono", ui-monospace, monospace;}
+  ::selection{background:var(--gold); color:var(--navy-deep);}
+  button{font-family:inherit;}
+
+  /* ============ TOP BRAND BAR ============ */
+  header.top{
+    position:sticky; top:env(safe-area-inset-top,0px); z-index:45;
+    background:color-mix(in srgb, var(--bg) 90%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--rule);
+  }
+  .top-inner{
+    max-width:1180px; margin-inline:auto; padding:12px 20px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:"Fraunces",serif; font-weight:600; font-size:1.05rem; white-space:nowrap;}
+  .brand svg{flex:none;}
+
+  /* ============ SHELL / LAYOUT ============ */
+  .shell{ max-width:1180px; margin-inline:auto; padding-inline:20px; }
+  @media(min-width:880px){
+    .shell{ display:grid; grid-template-columns:272px minmax(0,1fr); gap:40px; align-items:start; }
+  }
+
+  /* ============ ROUTEBAR (persistent route / tabs) ============ */
+  .routebar{
+    position:sticky; top:calc(env(safe-area-inset-top,0px) + 49px); z-index:35;
+    display:flex; gap:8px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+    padding:10px 20px 12px; margin-inline:-20px;
+    background:color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--rule);
+    scrollbar-width:thin; align-items:flex-start;
+  }
+  .routebar .route-group.standalone{ display:flex; gap:8px; flex:none; }
+  .routebar .route-steps{ display:flex; gap:8px; flex:none; position:relative; }
+  .route-item{
+    flex:none; display:flex; align-items:center; gap:8px; border:1px solid transparent; background:transparent;
+    padding:6px 10px; border-radius:999px; cursor:pointer; text-align:left; font:inherit; color:var(--ink);
+  }
+  .route-item small{ display:none; }
+  .route-item b{ font-weight:600; font-size:.82rem; white-space:nowrap; }
+  .route-item .step-dot{
+    flex:none; width:26px; height:26px; border-radius:50%; border:1.5px solid var(--gold); color:var(--gold-strong);
+    display:flex; align-items:center; justify-content:center; font-family:"IBM Plex Mono",monospace; font-size:.68rem; font-weight:600;
+    background:var(--surface);
+  }
+  .route-item .step-dot--limit{ border-color:var(--terracotta); color:var(--terracotta); font-size:.85rem; }
+  .route-item .dot{ display:none; flex:none; width:7px; height:7px; border-radius:50%; background:var(--ink-faint); }
+  .route-item[aria-selected="true"]{ background:var(--surface-strong); border-color:var(--surface-strong); }
+  .route-item[aria-selected="true"] b{ color:var(--surface-strong-text); }
+  .route-item[aria-selected="true"] .step-dot{ background:var(--gold); border-color:var(--gold); color:var(--navy-deep); }
+  .route-item[aria-selected="true"] .step-dot--limit{ background:var(--terracotta); border-color:var(--terracotta); color:var(--surface-strong-text); }
+  .route-item[aria-selected="true"] .dot{ background:var(--gold); }
+  .route-item:hover:not([aria-selected="true"]){ background:var(--box-neutral-bg); border-color:var(--rule); }
+  .route-item:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  @media(min-width:880px){
+    .routebar{
+      position:sticky; top:calc(env(safe-area-inset-top,0px) + 68px);
+      flex-direction:column; align-items:stretch; overflow:visible;
+      padding:4px 0 0; margin-inline:0; background:transparent; backdrop-filter:none; border-bottom:none;
+      max-height:calc(100vh - 100px); overflow-y:auto; gap:3px;
+    }
+    .routebar .route-group.standalone{ flex-direction:column; gap:2px; }
+    .routebar .route-group.standalone .route-item .dot{ display:block; }
+    .routebar .route-steps{
+      flex-direction:column; gap:2px; padding-left:23px; margin:8px 0; position:relative;
+    }
+    .routebar .route-steps::before{
+      content:""; position:absolute; left:12px; top:16px; bottom:16px; width:2px; background:var(--rule);
+    }
+    .routebar .route-steps .route-item{ padding-left:0; }
+    .routebar .route-steps .step-dot{ position:absolute; left:-23px; }
+    .route-item{ width:100%; padding:8px 10px 8px 4px; border-radius:10px; }
+    .routebar .route-steps .route-item{ padding-left:0; }
+    .route-item small{
+      display:block; font-size:.72rem; color:var(--ink-faint); font-weight:400; margin-top:1px; white-space:normal; line-height:1.3;
+    }
+    .route-item[aria-selected="true"] small{ color:var(--surface-strong-text); opacity:.72; }
+    .route-divider{ height:1px; background:var(--rule); margin:10px 4px; }
+  }
+
+  /* ============ PANELS ============ */
+  .panels{ min-width:0; }
+  .panel{ padding-block:30px 70px; max-width:720px; }
+  .kicker{
+    font-family:"IBM Plex Mono",monospace; font-size:.72rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--gold-strong); font-weight:600; margin-bottom:6px;
+  }
+  h2.h-section{ font-size:clamp(1.5rem,4vw,1.9rem); font-weight:600; border-bottom:2px solid var(--gold); padding-bottom:12px; margin-bottom:16px;}
+  p.lede{ color:var(--ink-soft); margin-top:0; }
+  p{ margin:0 0 14px; }
+
+  /* hero (inicio panel) */
+  .compass-wrap{ display:flex; justify-content:center; margin-bottom:14px; }
+  .compass{ width:96px; height:96px; }
+  @media (prefers-reduced-motion: no-preference){
+    .compass .needle{ animation: spin 140s linear infinite; transform-origin:56px 56px; }
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace; font-size:.75rem; letter-spacing:.14em;
+    color:var(--gold-strong); font-weight:600; margin-bottom:8px; text-align:center;
+  }
+  h1.title{ font-size:clamp(1.8rem, 5vw, 2.5rem); font-weight:600; text-align:center; line-height:1.1; }
+  .tagline{
+    text-align:center; margin-top:12px; font-family:"IBM Plex Mono",monospace; font-size:.8rem;
+    color:var(--ink-soft); letter-spacing:.02em;
+  }
+  .sub{ text-align:center; color:var(--ink-soft); max-width:56ch; margin:16px auto 0; }
+
+  /* step header inside step panels */
+  .step-head{ display:flex; align-items:center; gap:16px; margin-bottom:18px; }
+  .step-badge{
+    flex:none; width:60px; height:60px; border-radius:10px; background:var(--surface-strong);
+    color:var(--gold); display:flex; align-items:center; justify-content:center;
+    font-family:"Fraunces",serif; font-weight:700; font-size:1.5rem;
+  }
+  .step-name{ font-size:clamp(1.4rem,4vw,1.9rem); font-weight:600; }
+  .step-tagline{ font-style:italic; color:var(--gold-strong); font-family:"IBM Plex Mono",monospace; font-size:.83rem; margin-top:2px;}
+
+  .micro-obj{
+    font-size:.92rem; margin:14px 0 22px; padding:10px 14px; border-left:3px solid var(--gold);
+    background:var(--box-accent-bg); border-radius:0 8px 8px 0;
+  }
+  .micro-obj b{ font-family:"IBM Plex Mono",monospace; letter-spacing:.08em; color:var(--gold-strong); font-size:.72rem; margin-right:6px;}
+  .micro-obj em{ color:var(--ink); font-style:italic; }
+
+  h3.h-sub{ font-family:"Fraunces",serif; font-size:1.15rem; font-weight:600; margin:24px 0 12px; }
+
+  /* box component */
+  .box{ border:1px solid var(--box-neutral-border); background:var(--box-neutral-bg); border-radius:10px; padding:14px 16px; margin-bottom:12px; }
+  .box .lbl{ font-family:"IBM Plex Mono",monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; font-weight:600; display:block; margin-bottom:4px; color:var(--box-neutral-label); }
+  .box.accent{ background:var(--box-accent-bg); border-color:var(--box-accent-border); }
+  .box.accent .lbl{ color:var(--box-accent-label); }
+  .box.info{ background:var(--box-info-bg); border-color:var(--box-info-border); }
+  .box.info .lbl{ color:var(--box-info-label); } .box.info p, .box.info{ color:var(--box-info-text); }
+  .box.good{ background:var(--box-good-bg); border-color:var(--box-good-border); }
+  .box.good .lbl{ color:var(--box-good-label); } .box.good{ color:var(--box-good-text); }
+  .box.warn{ background:var(--box-warn-bg); border-color:var(--box-warn-border); }
+  .box.warn .lbl{ color:var(--box-warn-label); } .box.warn{ color:var(--box-warn-text); }
+  .box.danger{ background:var(--box-danger-bg); border-color:var(--box-danger-border); }
+  .box.danger .lbl{ color:var(--box-danger-label); } .box.danger{ color:var(--box-danger-text); }
+  .box p:last-child{ margin-bottom:0; }
+
+  .vignette{ margin-top:22px; }
+  .vignette p{ font-style:italic; }
+  .prompt{ margin-top:12px; }
+
+  /* data table */
+  .tbl-wrap{ overflow-x:auto; margin-bottom:14px; border-radius:10px; border:1px solid var(--rule); }
+  table.dtbl{ width:100%; border-collapse:collapse; min-width:480px; font-size:.92rem; }
+  table.dtbl th{
+    background:var(--surface-strong); color:var(--surface-strong-text); text-align:left;
+    font-family:"IBM Plex Mono",monospace; font-size:.72rem; letter-spacing:.06em; text-transform:uppercase;
+    padding:10px 14px; font-weight:600;
+  }
+  table.dtbl td{ padding:11px 14px; border-top:1px solid var(--rule); vertical-align:top; }
+  table.dtbl tr:nth-child(even) td{ background:var(--box-accent-bg); }
+  table.dtbl td.strong{ font-weight:600; }
+
+  .grid-boxes{ display:grid; gap:12px; }
+  @media(min-width:560px){ .grid-boxes.two{ grid-template-columns:1fr 1fr; } }
+
+  /* semaforo pills */
+  .semaforo-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .semaforo-row .step-lbl{ min-width:150px; font-weight:600; font-size:.92rem; }
+  .pill-group{ display:flex; gap:6px; }
+  .pill{
+    font-family:"IBM Plex Mono",monospace; font-size:.72rem; border:1px solid var(--rule); background:var(--surface);
+    border-radius:999px; padding:6px 12px; cursor:pointer; color:var(--ink-soft);
+  }
+  .pill[data-c="g"].active{ background:var(--box-good-bg); border-color:var(--box-good-border); color:var(--box-good-text); }
+  .pill[data-c="a"].active{ background:var(--box-warn-bg); border-color:var(--box-warn-border); color:var(--box-warn-text); }
+  .pill[data-c="r"].active{ background:var(--box-danger-bg); border-color:var(--box-danger-border); color:var(--box-danger-text); }
+
+  /* facilitation section distinct wash */
+  .facilit{ background:var(--bg-raised); border-radius:16px; padding:26px 22px; box-shadow:var(--shadow); }
+  .facilit h3.h-sub{ margin-top:0; }
+
+  /* quick card */
+  .quickcard{
+    border:1.5px solid var(--navy); border-radius:16px; padding:24px 22px; background:var(--surface);
+    box-shadow:var(--shadow);
+  }
+  .quickcard ol{ list-style:none; margin:0 0 16px; padding:0; display:grid; gap:8px; }
+  .quickcard li{ display:flex; gap:12px; align-items:baseline; padding:9px 12px; border-radius:8px; background:var(--box-accent-bg); }
+  .quickcard li .num{ font-family:"IBM Plex Mono",monospace; color:var(--gold-strong); font-weight:700; flex:none; }
+  .phrasebook{ display:grid; gap:8px; margin-top:8px; }
+  @media(min-width:560px){ .phrasebook{ grid-template-columns:1fr 1fr; } }
+  .phrase{ font-size:.88rem; padding:9px 12px; border:1px solid var(--rule); border-radius:8px; background:var(--surface); }
+
+  footer{ text-align:center; padding:30px 20px 60px; font-family:"IBM Plex Mono",monospace; font-size:.78rem; letter-spacing:.04em; color:var(--ink-faint); border-top:1px solid var(--rule); margin-top:20px; }
+
+  .list-plain{ margin:0 0 14px; padding-left:1.1em; }
+  .list-plain li{ margin-bottom:7px; color:var(--ink-soft); }
+  .list-plain li::marker{ color:var(--gold-strong); }
+
+  /* group rows inside tables */
+  table.dtbl tr.grp td{
+    background:var(--box-info-bg) !important; color:var(--box-info-label);
+    font-family:"IBM Plex Mono",monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; font-weight:600;
+    padding:8px 14px;
+  }
+
+  /* principle callout (frases fuerza) */
+  .principle{
+    font-family:"Fraunces",Georgia,serif; font-size:1.12rem; line-height:1.45; font-weight:500;
+    border-left:3px solid var(--terracotta); padding:6px 0 6px 16px; margin:22px 0; color:var(--ink);
+  }
+
+  /* checklist before approaching */
+  .asklist{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+  .asklist li{ padding-left:18px; position:relative; }
+  .asklist li::before{ content:""; position:absolute; left:2px; top:.62em; width:7px; height:7px; border-radius:50%; background:var(--gold); }
+  .asklist li b{ display:block; }
+  .asklist li span{ color:var(--ink-soft); font-size:.92rem; }
+
+  /* ficha de registro */
+  .ficha{ display:grid; gap:14px; }
+  .field label{ display:block; font-weight:600; font-size:.92rem; margin-bottom:5px; }
+  .field label small{ display:block; font-weight:400; color:var(--ink-faint); font-size:.8rem; margin-top:1px; }
+  .field input, .field textarea{
+    width:100%; font:inherit; font-size:.95rem; color:var(--ink); background:var(--surface);
+    border:1px solid var(--rule); border-radius:8px; padding:9px 11px;
+  }
+  .field textarea{ min-height:64px; resize:vertical; field-sizing:content; line-height:1.5; }
+  .field input:focus-visible, .field textarea:focus-visible{ outline:2px solid var(--gold); outline-offset:1px; border-color:var(--gold); }
+  .ficha-block{ border:1px solid var(--rule); border-radius:12px; padding:16px; background:var(--bg-raised); }
+  .ficha-block > h4{ font-family:"Fraunces",serif; font-size:1.02rem; margin:0 0 4px; }
+  .ficha-block > p.hint{ color:var(--ink-soft); font-size:.88rem; margin-bottom:12px; }
+  .trio{ display:grid; gap:12px; }
+  @media(min-width:720px){ .trio{ grid-template-columns:repeat(3,1fr); } .trio .field{ display:flex; flex-direction:column; } .trio .field textarea{ margin-top:auto; } }
+
+  .actions{ display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 6px; }
+  .btn{
+    font:inherit; font-size:.88rem; font-weight:600; padding:8px 14px; border-radius:999px; cursor:pointer;
+    border:1.5px solid var(--navy); background:var(--surface); color:var(--navy);
+  }
+  .btn.primary{ background:var(--surface-strong); border-color:var(--surface-strong); color:var(--surface-strong-text); }
+  .btn.quiet{ border-color:var(--rule); color:var(--ink-soft); }
+  .btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .status{ font-size:.82rem; color:var(--ink-faint); min-height:1.2em; }
+
+  /* tú / usted toggle */
+  .seg{ display:inline-flex; border:1px solid var(--rule); border-radius:999px; padding:3px; background:var(--surface); margin-bottom:12px; }
+  .seg button{ font:inherit; font-size:.85rem; border:0; background:transparent; padding:6px 14px; border-radius:999px; cursor:pointer; color:var(--ink-soft); }
+  .seg button[aria-pressed="true"]{ background:var(--surface-strong); color:var(--surface-strong-text); }
+  .seg button:focus-visible{ outline:2px solid var(--gold); outline-offset:1px; }
+  .phrase-group h4{ font-family:"IBM Plex Mono",monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--gold-strong); margin:16px 0 6px; }
+  .quickcard li .num{ min-width:1.6em; }
+  .quickcard li b{ font-weight:600; }
+
+  /* ===== EN TERRENO (segunda parte) ===== */
+  .route-label{ display:none; }
+  @media(min-width:880px){
+    .route-label{ display:block; font-family:"IBM Plex Mono",monospace; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--terracotta); font-weight:600; margin:2px 4px 4px; }
+    .route-label small{ display:block; text-transform:none; letter-spacing:0; font-family:"IBM Plex Sans",sans-serif; font-weight:400; color:var(--ink-faint); font-size:.72rem; margin-top:2px; }
+  }
+  .route-group.terreno{ display:flex; gap:8px; flex:none; }
+  @media(min-width:880px){ .route-group.terreno{ flex-direction:column; gap:2px; } }
+  .route-item .sq{ flex:none; width:22px; height:22px; border-radius:5px; border:1.5px solid var(--terracotta); color:var(--terracotta);
+    display:flex; align-items:center; justify-content:center; font-family:"IBM Plex Mono",monospace; font-size:.62rem; font-weight:700; background:var(--surface); }
+  .route-item[aria-selected="true"] .sq{ background:var(--terracotta); color:var(--surface-strong-text); }
+
+  .t-head{ background:var(--surface-strong); color:var(--surface-strong-text); border-radius:16px; padding:22px 22px 18px; margin-bottom:22px; }
+  .t-head .t-kicker{ font-family:"IBM Plex Mono",monospace; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); font-weight:600; }
+  .t-head h2{ color:var(--surface-strong-text); font-size:clamp(1.6rem,5vw,2.2rem); font-weight:600; margin:4px 0 14px; line-height:1.12; }
+  .moments{ display:grid; grid-template-columns:repeat(4,1fr); gap:4px; }
+  .moments span{ font-size:.72rem; line-height:1.25; padding:7px 8px; border-radius:6px; background:color-mix(in srgb, var(--surface-strong-text) 8%, transparent); color:color-mix(in srgb, var(--surface-strong-text) 70%, transparent); }
+  .moments span b{ display:block; font-family:"IBM Plex Mono",monospace; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; }
+  .moments span.on{ background:var(--gold); color:var(--navy-deep); }
+  .t-intro{ font-size:1.05rem; }
+  .t-quote{ border:1.5px solid var(--terracotta); border-radius:12px; padding:14px 16px; font-weight:600; margin:0 0 18px; }
+
+  .seq{ display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 16px; padding:0; list-style:none; counter-reset:q; }
+  .seq li{ font-family:"IBM Plex Mono",monospace; font-size:.72rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+    padding:6px 10px; border-radius:999px; border:1px solid var(--rule); background:var(--surface); color:var(--navy); }
+
+  .compass-card{ border:2px solid var(--surface-strong); border-radius:16px; overflow:hidden; background:var(--surface); box-shadow:var(--shadow); }
+  .compass-card .row{ display:grid; grid-template-columns:minmax(120px,34%) 1fr; border-top:1px solid var(--rule); }
+  .compass-card .row:first-child{ border-top:0; }
+  .compass-card .k{ background:var(--surface-strong); color:var(--surface-strong-text); padding:12px 14px; }
+  .compass-card .k b{ display:block; font-family:"IBM Plex Mono",monospace; font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); }
+  .compass-card .k span{ font-family:"Fraunces",serif; font-weight:600; font-size:1.02rem; }
+  .compass-card .k i{ display:block; font-style:normal; font-size:.7rem; opacity:.7; margin-top:3px; font-family:"IBM Plex Mono",monospace; }
+  .compass-card .v{ padding:12px 14px; }
+
+  .bridge{ border:1px dashed var(--terracotta); border-radius:10px; padding:12px 16px; margin:22px 0 12px; background:var(--surface); }
+  .bridge .lbl{ font-family:"IBM Plex Mono",monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; font-weight:600; color:var(--terracotta); display:block; margin-bottom:4px; }
+  .bridge p{ margin-bottom:8px; }
+  .bridge--back{ border-color:var(--gold); }
+  .bridge--back .lbl{ color:var(--gold-strong); }
+  .xlinks{ display:flex; flex-wrap:wrap; gap:6px; }
+  .xlink{ font:inherit; font-size:.85rem; font-weight:600; border:1px solid var(--rule); background:var(--bg-raised); color:var(--navy); border-radius:999px; padding:6px 12px; cursor:pointer; }
+  .xlink:hover{ border-color:var(--navy); }
+  .xlink:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .two-parts{ display:grid; gap:12px; margin:24px 0 8px; }
+  @media(min-width:620px){ .two-parts{ grid-template-columns:1fr 1fr; } }
+  .part{ border-radius:14px; padding:18px; border:1px solid var(--rule); background:var(--surface); display:flex; flex-direction:column; gap:6px; }
+  .part.dark{ background:var(--surface-strong); color:var(--surface-strong-text); border-color:var(--surface-strong); }
+  .part h3{ font-size:1.25rem; color:inherit; }
+  .part .when{ font-family:"IBM Plex Mono",monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; font-weight:600; color:var(--gold-strong); }
+  .part.dark .when{ color:var(--gold); }
+  .part p{ margin:0; font-size:.93rem; }
+  .part .xlink{ align-self:flex-start; margin-top:8px; }
+
+  .ej{ margin-top:8px; display:grid; gap:5px; }
+  .ej .ej-lbl{ font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; font-weight:600; color:var(--gold-strong); }
+  .ej q{ quotes:"«" "»"; display:block; padding:6px 10px; border-left:2px solid var(--gold); background:var(--bg-raised); border-radius:0 6px 6px 0; font-size:.9rem; }
+  .ej .vs{ display:grid; gap:4px; }
+  .ej .vs span{ font-size:.82rem; color:var(--ink-faint); }
+  .ej .vs span q{ color:var(--ink); margin-top:2px; }
+  .ej .vs .no q{ border-left-color:var(--ink-faint); color:var(--ink-soft); text-decoration:line-through; text-decoration-color:color-mix(in srgb, var(--ink-faint) 60%, transparent); }
+  td ul.fr{ margin:0; padding-left:1em; display:grid; gap:4px; }
+  td ul.fr li::marker{ color:var(--gold-strong); }
+
+  .compass-card .v .check{ margin-top:10px; padding-top:10px; border-top:1px dashed var(--rule); }
+  .compass-card .v .check p{ margin:0 0 6px; font-weight:600; font-size:.92rem; }
+  .compass-card .v .check .pill-group{ flex-wrap:wrap; }
+  .eval-mode{ margin:0 0 14px; }
+  .result{ margin-top:18px; }
+  .result ul{ margin:6px 0 0; padding:0; list-style:none; display:grid; gap:8px; }
+  .result li{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+
+  /* print: only the active panel */
+  @media print{
+    header.top, .routebar, footer, .actions, .seg, .no-print, .bridge{ display:none !important; }
+    .t-head, .compass-card .k{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body{ background:#fff; color:#000; font-size:11pt; }
+    .shell{ display:block; max-width:none; padding:0; }
+    .panel{ padding:0; max-width:none; }
+    .quickcard, .facilit{ box-shadow:none; }
+    .field textarea, .field input{ border:1px solid #999; }
+    .ficha-block{ break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <span class="brand">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="var(--gold)" stroke-width="1.6"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2" stroke="var(--gold)" stroke-width="1.4"/><path d="M15.5 8.5L11 11l-1.5 4.5L14 13l1.5-4.5z" fill="var(--terracotta)"/></svg>
+      Brújula
+    </span>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="routebar" id="routebar" role="tablist" aria-label="Ruta de la guía">
+    <div class="route-group standalone">
+      <button class="route-item" data-tab="inicio" role="tab" id="tab-inicio" aria-controls="inicio">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="route-text"><b>Inicio</b><small>Idea central y objetivos</small></span>
+      </button>
+    </div>
+
+    <div class="route-steps">
+      <button class="route-item route-step" data-tab="paso-01" role="tab" id="tab-paso-01" aria-controls="paso-01">
+        <span class="step-dot">01</span>
+        <span class="route-text"><b>Observa</b><small>Lee el escenario antes de intervenir.</small></span>
+      </button>
+      <button class="route-item route-step" data-tab="paso-02" role="tab" id="tab-paso-02" aria-controls="paso-02">
+        <span class="step-dot">02</span>
+        <span class="route-text"><b>Entra</b><small>Hazte legible para los demás.</small></span>
+      </button>
+      <button class="route-item route-step" data-tab="paso-03" role="tab" id="tab-paso-03" aria-controls="paso-03">
+        <span class="step-dot">03</span>
+        <span class="route-text"><b>Vincúlate</b><small>No empieces extrayendo información.</small></span>
+      </button>
+      <button class="route-item route-step" data-tab="paso-04" role="tab" id="tab-paso-04" aria-controls="paso-04">
+        <span class="step-dot">04</span>
+        <span class="route-text"><b>Conversa</b><small>Pregunta sin convertir en interrogatorio.</small></span>
+      </button>
+      <button class="route-item route-step" data-tab="paso-05" role="tab" id="tab-paso-05" aria-controls="paso-05">
+        <span class="step-dot">05</span>
+        <span class="route-text"><b>Recalcula</b><small>Cuando algo no fluye, cambia de estrategia.</small></span>
+      </button>
+      <button class="route-item route-step route-step--limit" data-tab="limites" role="tab" id="tab-limites" aria-controls="limites">
+        <span class="step-dot step-dot--limit">!</span>
+        <span class="route-text"><b>Límites</b><small>No toda interacción debe continuar.</small></span>
+      </button>
+      <button class="route-item route-step" data-tab="paso-06" role="tab" id="tab-paso-06" aria-controls="paso-06">
+        <span class="step-dot">06</span>
+        <span class="route-text"><b>Cierra</b><small>Salir también forma parte de la interacción.</small></span>
+      </button>
+    </div>
+
+    <div class="route-divider" aria-hidden="true"></div>
+
+    <div class="route-group standalone">
+      <button class="route-item" data-tab="despues" role="tab" id="tab-despues" aria-controls="despues">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="route-text"><b>Revisión</b><small>Convierte la interacción en aprendizaje</small></span>
+      </button>
+      <button class="route-item" data-tab="facilitacion" role="tab" id="tab-facilitacion" aria-controls="facilitacion">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="route-text"><b>Facilitación</b><small>Guía para quien facilita</small></span>
+      </button>
+    </div>
+
+    <div class="route-divider" aria-hidden="true"></div>
+    <div class="route-label">En terreno<small>Recursos para usar durante la salida</small></div>
+    <div class="route-group terreno">
+      <button class="route-item" data-tab="terreno-antes" role="tab" id="tab-terreno-antes" aria-controls="terreno-antes">
+        <span class="sq">A</span><span class="route-text"><b>Antes</b><small>Leo la situación</small></span>
+      </button>
+      <button class="route-item" data-tab="terreno-durante" role="tab" id="tab-terreno-durante" aria-controls="terreno-durante">
+        <span class="sq">D</span><span class="route-text"><b>Durante</b><small>Escucho y converso</small></span>
+      </button>
+      <button class="route-item" data-tab="terreno-cambia" role="tab" id="tab-terreno-cambia" aria-controls="terreno-cambia">
+        <span class="sq">S</span><span class="route-text"><b>Si algo cambia</b><small>Me adapto</small></span>
+      </button>
+      <button class="route-item" data-tab="terreno-despues" role="tab" id="tab-terreno-despues" aria-controls="terreno-despues">
+        <span class="sq">R</span><span class="route-text"><b>Después</b><small>Registro y aprendo</small></span>
+      </button>
+      <button class="route-item" data-tab="terreno-brujula" role="tab" id="tab-terreno-brujula" aria-controls="terreno-brujula">
+        <span class="sq">✦</span><span class="route-text"><b>Mi brújula</b><small>Guía de bolsillo y autoevaluación</small></span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="panels">
+
+    <!-- ===================== INICIO ===================== -->
+    <section class="panel" id="inicio" data-panel role="tabpanel" aria-labelledby="tab-inicio" tabindex="0">
+      <div class="compass-wrap">
+        <svg class="compass" viewBox="0 0 112 112" aria-hidden="true">
+          <circle cx="56" cy="56" r="52" fill="none" stroke="var(--rule)" stroke-width="1.4"/>
+          <circle cx="56" cy="56" r="40" fill="none" stroke="var(--rule)" stroke-width="1"/>
+          <g class="mono" font-size="8" fill="var(--ink-faint)">
+            <text x="56" y="14" text-anchor="middle">N</text>
+            <text x="56" y="104" text-anchor="middle">S</text>
+            <text x="102" y="59" text-anchor="middle">E</text>
+            <text x="10" y="59" text-anchor="middle">O</text>
+          </g>
+          <g class="needle">
+            <path d="M56 20 L62 56 L56 92 L50 56 Z" fill="var(--terracotta)" opacity="0.9"/>
+            <path d="M56 20 L62 56 L56 56 Z" fill="var(--gold)"/>
+          </g>
+          <circle cx="56" cy="56" r="4" fill="var(--navy-deep)"/>
+        </svg>
+      </div>
+      <div class="eyebrow">BRÚJULA</div>
+      <h1 class="title">Guía de interacción<br>para el trabajo de campo</h1>
+      <div class="tagline">observar · entrar · vincularse · conversar · recalcular · cerrar</div>
+      <p class="sub">Una guía para consultar antes, durante y después de una interacción — y para usar en la formación de quienes recién comienzan su trabajo de campo en Antropología. </p>
+
+      <div class="two-parts">
+        <div class="part">
+          <span class="when">Parte 1 · para prepararte y revisar</span>
+          <h3>Brújula</h3>
+          <p>La ruta de seis pasos, con técnicas, ejemplos y preguntas para pensar cómo interactúas. Úsala en clases, antes de salir y al volver.</p>
+          <button type="button" class="xlink" data-goto="paso-01">Empezar la ruta</button>
+        </div>
+        <div class="part dark">
+          <span class="when">Parte 2 · para llevar a la salida</span>
+          <h3>En terreno</h3>
+          <p>Recursos para acercarte, conversar y desenvolverte con otras personas. Cuatro momentos, frases listas para usar y una ficha para registrar lo ocurrido.</p>
+          <button type="button" class="xlink" data-goto="terreno-antes">Abrir En terreno</button>
+        </div>
+      </div>
+
+      <div class="box info" style="margin-top:24px;">
+        <span class="lbl">Idea central</span>
+        <p>En terreno no necesitas un guion para cada situación. Necesitas herramientas para leer lo que ocurre, reconocer tu posición y decidir cómo participar sin perder de vista a las personas, sus tiempos y el contexto.</p>
+      </div>
+
+      <h3 class="h-sub">Qué vas a poder hacer con esta guía</h3>
+      <ul class="list-plain">
+        <li>Leer una situación de campo antes de intervenir en ella.</li>
+        <li>Presentarte de un modo que reduzca la incertidumbre de la otra persona.</li>
+        <li>Reconocer señales de apertura, duda o límite mientras conversas.</li>
+        <li>Sostener una conversación de campo sin convertirla en interrogatorio.</li>
+        <li>Ajustar tu estrategia cuando una interacción no fluye como esperabas.</li>
+        <li>Cerrar una interacción cuidando el vínculo y registrar lo aprendido.</li>
+      </ul>
+      <p style="font-style:italic; color:var(--ink-soft);">Esta guía sigue la lógica de la práctica reflexiva: observar, actuar, revisar el efecto de esa acción y ajustar. No es una secuencia rígida: es un ciclo al que puedes volver cada vez que la situación cambie.</p>
+
+      <h3 class="h-sub">Cómo usar esta guía</h3>
+      <div class="tbl-wrap">
+        <table class="dtbl">
+          <thead><tr><th>Momento</th><th>Cómo la usas</th></tr></thead>
+          <tbody>
+            <tr><td class="strong">Antes de salir a terreno</td><td>Revisa la ruta completa (a la izquierda / arriba) y repasa los pasos 01 a 03.</td></tr>
+            <tr><td class="strong">Durante el trabajo de campo</td><td>Abre <b>En terreno</b>. Revisa el momento en que estás o abre Mi brújula, el cuadro para guardar como captura en tu teléfono.</td></tr>
+            <tr><td class="strong">Después de cada salida</td><td>Completa la ficha en <b>En terreno · Después</b> y autoevalúate en <b>Mi brújula</b>. La pestaña <b>Revisión</b> te ayuda a analizar lo registrado.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="h-sub">La ruta completa</h3>
+      <p class="lede">La misma ruta que ves siempre visible junto a este contenido, con el detalle de cada paso.</p>
+      <div class="tbl-wrap">
+        <table class="dtbl">
+          <thead><tr><th>Momento</th><th>Paso</th><th>Pregunta clave</th><th>Acción</th></tr></thead>
+          <tbody>
+            <tr><td>Antes</td><td class="strong">01 · Observa</td><td>¿Qué está pasando?</td><td>Lee el escenario antes de intervenir.</td></tr>
+            <tr><td>Al comenzar</td><td class="strong">02 · Entra</td><td>¿Cómo entro sin irrumpir?</td><td>Hazte legible: quién eres, por qué estás ahí y qué harás.</td></tr>
+            <tr><td>Al comenzar</td><td class="strong">03 · Vincúlate</td><td>¿Qué señales recibo?</td><td>Reconoce ritmos, señales de apertura y límites.</td></tr>
+            <tr><td>Durante</td><td class="strong">04 · Conversa</td><td>¿Cómo acompaño la conversación?</td><td>Pregunta, escucha, profundiza y verifica.</td></tr>
+            <tr><td>Si algo cambia</td><td class="strong">05 · Recalcula</td><td>¿Qué necesita cambiar?</td><td>Ajusta tu forma de participar.</td></tr>
+            <tr><td>En todo momento</td><td class="strong">! · Límites</td><td>¿Debo continuar?</td><td>Pregunta, desacelera, detente o protege.</td></tr>
+            <tr><td>Al terminar</td><td class="strong">06 · Cierra</td><td>¿Cómo salgo cuidando el vínculo?</td><td>Agradece, aclara acuerdos y anota.</td></tr>
+            <tr><td>Después</td><td class="strong">Revisión</td><td>¿Qué aprendí de esta interacción?</td><td>Describe, interpreta y decide qué ajustar.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="box accent">
+        <span class="lbl">Regla de oro</span>
+        <p>Si la situación cambia, la estrategia también puede cambiar. Observar no es una etapa que ocurre una sola vez: acompaña todo el trabajo de campo.</p>
+      </div>
+    </section>
+
+    <!-- ===================== PASO 01 ===================== -->
+    <section class="panel" id="paso-01" data-panel hidden role="tabpanel" aria-labelledby="tab-paso-01" tabindex="0">
+      <div class="step-head">
+        <div class="step-badge mono">01</div>
+        <div>
+          <div class="step-name">Observa</div>
+          <div class="step-tagline">Lee el escenario antes de intervenir.</div>
+        </div>
+      </div>
+      <p>La primera tarea no es hablar: es orientarte. Mira qué actividad está ocurriendo, quiénes participan, cómo se relacionan y qué lugar ocupas tú en ese momento.</p>
+      <div class="micro-obj"><b>Vas a poder</b><em>identificar qué está ocurriendo, quién ocupa qué lugar y si es un buen momento para intervenir.</em></div>
+
+      <h3 class="h-sub">Técnica · Pausa 5×5</h3>
+      <div class="grid-boxes two">
+        <div class="box"><span class="lbl">Espacio</span><p>¿Dónde estoy? ¿Qué usos parece tener este lugar?</p></div>
+        <div class="box"><span class="lbl">Actores</span><p>¿Quiénes están? ¿Quiénes parecen tener roles relevantes?</p></div>
+        <div class="box"><span class="lbl">Actividad</span><p>¿Qué está ocurriendo ahora? ¿Es buen momento para intervenir?</p></div>
+        <div class="box"><span class="lbl">Relaciones</span><p>¿Quién habla con quién? ¿Quién decide? ¿Quién queda al margen?</p></div>
+      </div>
+      <div class="box"><span class="lbl">Posición</span><p>¿Cómo puede estar siendo leída mi presencia?</p></div>
+
+      <div class="box info"><span class="lbl">Antes de actuar</span><p>Pregúntate: ¿qué necesito hacer ahora y qué necesito cuidar para hacerlo?</p></div>
+      <div class="box accent vignette"><span class="lbl">En terreno</span><p>Llegas a una feria libre un sábado a media mañana. Antes de acercarte a nadie te detienes un momento: ves a un grupo de feriantes conversando en una esquina, notas que la mayoría de quienes compran no se detienen a hablar, y un vendedor te mira dos veces sin acercarse. Con eso decides esperar unos minutos más antes de presentarte.</p></div>
+      <div class="bridge"><span class="lbl">En terreno</span><p>Antes de acercarte, estas preguntas se resumen en una lista breve para revisar en el lugar.</p><button type="button" class="xlink" data-goto="terreno-antes">Ir a Antes · Leo la situación</button></div>
+      <div class="box info prompt"><span class="lbl">Antes de seguir</span><p>¿Qué fue lo primero que notaste al llegar hoy a terreno? ¿Qué casi no viste?</p></div>
+    </section>
+
+    <!-- ===================== PASO 02 ===================== -->
+    <section class="panel" id="paso-02" data-panel hidden role="tabpanel" aria-labelledby="tab-paso-02" tabindex="0">
+      <div class="step-head">
+        <div class="step-badge mono">02</div>
+        <div>
+          <div class="step-name">Entra</div>
+          <div class="step-tagline">Hazte legible para los demás.</div>
+        </div>
+      </div>
+      <p>Una presentación clara reduce incertidumbre. No necesitas explicar todo el proyecto de una vez: entrega información suficiente para que la otra persona comprenda quién eres y qué estás haciendo.</p>
+      <div class="micro-obj"><b>Vas a poder</b><em>presentarte de forma clara y breve, sin necesitar que la otra persona ya entienda todo tu proyecto.</em></div>
+
+      <h3 class="h-sub">Técnica · Presentación en tres capas</h3>
+      <div class="tbl-wrap">
+        <table class="dtbl">
+          <thead><tr><th>1 · Quién soy</th><th>2 · Por qué estoy aquí</th><th>3 · Qué espero hacer</th></tr></thead>
+          <tbody><tr><td>Nombre + pertenencia relevante.</td><td>Motivo de tu presencia, en lenguaje comprensible.</td><td>Qué quieres hacer ahora y qué participación esperas.</td></tr></tbody>
+        </table>
+      </div>
+      <div class="grid-boxes two">
+        <div class="box accent"><span class="lbl">Frase posible · tú</span><p>«Hola, soy ____. Estoy participando en un trabajo de campo sobre ____. Hoy venimos a conocer un poco cómo funciona este espacio. ¿Es un buen momento para que nos quedemos o conversemos?»</p></div>
+        <div class="box accent"><span class="lbl">Frase posible · usted</span><p>«Hola, disculpe, ¿le puedo hacer una consulta? Mi nombre es ____, soy estudiante de Antropología de la Universidad Alberto Hurtado. Estamos haciendo un trabajo de campo sobre ____ y queremos conocer cómo se desarrolla esta actividad. ¿Tendría unos minutos para que conversemos?»</p></div>
+      </div>
+      <div class="box info"><span class="lbl">¿Tú o usted?</span><p>Decide según la persona y el lugar. Con personas mayores, con quienes atienden público o en espacios institucionales, el usted suele ser el punto de partida más respetuoso. Si la persona te tutea o te pide que la tutees, puedes seguir su registro.</p></div>
+      <div class="box danger"><span class="lbl">Evita</span><p>Presentaciones demasiado largas, lenguaje técnico innecesario o actuar como si tu presencia ya estuviera comprendida y autorizada.</p></div>
+
+      <div class="box accent vignette"><span class="lbl">En terreno</span><p>Te acercas a la feriante que te miró antes. Le dices tu nombre, que estás haciendo un trabajo de campo sobre el comercio del barrio, y le preguntas si es un buen momento para conversar un rato. Ella sigue atendiendo mientras te responde — y eso también es una respuesta.</p></div>
+      <div class="bridge"><span class="lbl">En terreno</span><p>Las frases para acercarte, presentarte y explicar qué haces están listas para usar, en tú y en usted.</p><button type="button" class="xlink" data-goto="terreno-durante">Ir a Durante · Escucho y converso</button></div>
+      <div class="box info prompt"><span class="lbl">Antes de seguir</span><p>Ensaya en voz alta tu presentación en tres capas antes de la próxima salida. ¿Cuánto dura? ¿Suena natural?</p></div>
+    </section>
+
+    <!-- ===================== PASO 03 ===================== -->
+    <section class="panel" id="paso-03" data-panel hidden role="tabpanel" aria-labelledby="tab-paso-03" tabindex="0">
+      <div class="step-head">
+        <div class="step-badge mono">03</div>
+        <div>
+          <div class="step-name">Vincúlate</div>
+          <div class="step-tagline">No empieces extrayendo información.</div>
+        </div>
+      </div>
+      <p>El vínculo también se construye en conversaciones pequeñas, tiempos de espera, silencios y formas de participar. Antes de preguntar mucho, reconoce el ritmo del espacio.</p>
+      <div class="micro-obj"><b>Vas a poder</b><em>reconocer si es momento de avanzar, esperar o detenerte, antes de empezar a preguntar.</em></div>
+
+      <h3 class="h-sub">Semáforo de interacción</h3>
+      <div class="box good"><span class="lbl">Verde · puedes avanzar</span><p>La persona sostiene la conversación, amplía respuestas, pregunta de vuelta, te incorpora o muestra disponibilidad.</p></div>
+      <div class="box warn"><span class="lbl">Amarillo · observa</span><p>Respuestas breves, atención dividida, dudas, cambios de tema o un momento poco oportuno.</p></div>
+      <div class="box danger"><span class="lbl">Rojo · detente / reformula</span><p>Negativa explícita, incomodidad visible, retirada, petición de no registrar o información que exige especial cuidado.</p></div>
+
+      <h3 class="h-sub">Técnica · Entrada gradual</h3>
+      <p>1. Reconoce lo que está ocurriendo. &nbsp;2. Haz una intervención breve. &nbsp;3. Observa la respuesta. &nbsp;4. Solo después profundiza.</p>
+      <div class="box accent"><span class="lbl">Pregunta útil</span><p>«¿Es un buen momento para preguntarte algo?» puede ser más importante que la pregunta que viene después.</p></div>
+
+      <div class="box accent vignette"><span class="lbl">En terreno</span><p>La feriante responde con frases cortas mientras pesa la fruta. No te mira mucho, pero tampoco se aleja. Interpretas la señal como amarilla: no es el mejor momento para profundizar, así que te quedas cerca, ayudas a ordenar unas bolsas y esperas una pausa en su trabajo antes de preguntar algo más.</p></div>
+      <div class="bridge"><span class="lbl">En terreno</span><p>Leer si es buen momento empieza antes de acercarte. En terreno lo tienes como lista de preguntas.</p><button type="button" class="xlink" data-goto="terreno-antes">Ir a Antes · Leo la situación</button></div>
+      <div class="box info prompt"><span class="lbl">Antes de seguir</span><p>¿Qué señal te hizo cambiar — o mantener — tu estrategia la última vez que estuviste en terreno?</p></div>
+    </section>
+
+    <!-- ===================== PASO 04 ===================== -->
+    <section class="panel" id="paso-04" data-panel hidden role="tabpanel" aria-labelledby="tab-paso-04" tabindex="0">
+      <div class="step-head">
+        <div class="step-badge mono">04</div>
+        <div>
+          <div class="step-name">Conversa</div>
+          <div class="step-tagline">Pregunta sin convertir la interacción en interrogatorio.</div>
+        </div>
+      </div>
+      <p>Una conversación de campo no se sostiene solo con preguntas. Se construye alternando apertura, escucha, profundización, aclaración y cierre.</p>
+      <div class="micro-obj"><b>Vas a poder</b><em>alternar apertura, escucha y profundización, sin encadenar preguntas.</em></div>
+
+      <h3 class="h-sub">Ruta de conversación</h3>
+      <div class="tbl-wrap">
+        <table class="dtbl">
+          <thead><tr><th>Movimiento</th><th>Para qué sirve</th><th>Frase posible</th></tr></thead>
+          <tbody>
+            <tr><td class="strong">Abrir</td><td>Invita a relatar, describir o explicar.</td><td>¿Cómo funciona esto habitualmente?</td></tr>
+            <tr><td class="strong">Escuchar</td><td>Deja espacio para desarrollar la respuesta.</td><td>[silencio / atención / seguimiento]</td></tr>
+            <tr><td class="strong">Profundizar</td><td>Recupera algo que la persona dijo.</td><td>Mencionaste ____. ¿Podrías contarme un poco más?</td></tr>
+            <tr><td class="strong">Ejemplificar</td><td>Pide una situación concreta.</td><td>¿Recuerdas alguna vez en que haya pasado?</td></tr>
+            <tr><td class="strong">Aclarar</td><td>Reconoce cuando no comprendes.</td><td>Cuando dices ____, ¿a qué te refieres?</td></tr>
+            <tr><td class="strong">Verificar</td><td>Comprueba tu interpretación.</td><td>Entonces, si entendí bien… ¿es así?</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="h-sub">Escucha en tres capas</h3>
+      <div class="box"><span class="lbl">Qué dice</span><p>Contenido: ideas, hechos, relatos, categorías.</p></div>
+      <div class="box"><span class="lbl">Cómo lo dice</span><p>Énfasis, pausas, dudas, cambios de tono, silencios.</p></div>
+      <div class="box"><span class="lbl">En qué situación lo dice</span><p>Quiénes están presentes, dónde ocurre, qué relación existe y qué está pasando alrededor.</p></div>
+
+      <div class="box accent vignette"><span class="lbl">En terreno</span><p>Cuando por fin hay una pausa, le preguntas cómo llegó a tener este puesto. Ella cuenta una historia larga sobre su familia. En vez de pasar a la siguiente pregunta de tu pauta, retomas algo que dijo — «mencionaste que tu papá también vendía acá» — y ahí la conversación se profundiza sola.</p></div>
+      <div class="bridge"><span class="lbl">En terreno</span><p>La secuencia de la conversación y sus frases, en una sola tabla para consultar en el momento.</p><button type="button" class="xlink" data-goto="terreno-durante">Ir a Durante · Escucho y converso</button></div>
+      <div class="box info prompt"><span class="lbl">Antes de seguir</span><p>En tu última conversación de campo, ¿en qué momento perdiste una oportunidad de profundizar?</p></div>
+    </section>
+
+    <!-- ===================== PASO 05 ===================== -->
+    <section class="panel" id="paso-05" data-panel hidden role="tabpanel" aria-labelledby="tab-paso-05" tabindex="0">
+      <div class="step-head">
+        <div class="step-badge mono">05</div>
+        <div>
+          <div class="step-name">Recalcula</div>
+          <div class="step-tagline">Cuando algo no fluye, cambia la estrategia.</div>
+        </div>
+      </div>
+      <p>Una dificultad no siempre significa que la interacción "salió mal". Puede ser información sobre el contexto, el momento, la relación o tu propia forma de intervenir.</p>
+      <div class="micro-obj"><b>Vas a poder</b><em>leer una dificultad como información, no como un fracaso, y ajustar tu forma de participar.</em></div>
+
+      <h3 class="h-sub">Si pasa esto…</h3>
+      <div class="tbl-wrap">
+        <table class="dtbl">
+          <thead><tr><th>Si pasa esto…</th><th>Evita</th><th>Prueba</th><th>Frase posible</th></tr></thead>
+          <tbody>
+            <tr><td class="strong">Nadie me habla</td><td>No fuerces una conversación inmediata.</td><td>Observa, participa cuando corresponda y busca una entrada gradual.</td><td>«¿Hay algo en que podamos ayudar mientras estamos acá?»</td></tr>
+            <tr><td class="strong">Responden muy poco</td><td>Evita encadenar preguntas para llenar el silencio.</td><td>Revisa si el momento, la pregunta o el vínculo permiten profundizar.</td><td>«Quizás lo pregunté de una forma muy amplia…»</td></tr>
+            <tr><td class="strong">No entiendo algo</td><td>No simules comprensión.</td><td>Pide aclaración y devuelve lo que crees haber entendido.</td><td>«Hay algo que no estoy seguro de haber entendido bien…»</td></tr>
+            <tr><td class="strong">Aparece un silencio</td><td>No lo llenes automáticamente.</td><td>Espera; observa si la persona quiere continuar o cerrar.</td><td>«Tómate tu tiempo.»</td></tr>
+            <tr><td class="strong">La persona no quiere participar</td><td>No intentes convencerla.</td><td>Reconoce la decisión y detén esa línea de interacción.</td><td>«Claro, no hay problema. Gracias de todas formas.»</td></tr>
+            <tr><td class="strong">Me hacen una pregunta personal</td><td>No tienes obligación de responder todo.</td><td>Decide qué es pertinente compartir y, si hace falta, marca un límite.</td><td>«Prefiero no entrar en eso, pero sí puedo contarte…»</td></tr>
+            <tr><td class="strong">Surge información sensible</td><td>Reduce velocidad y revisa consentimiento/registro.</td><td>Pregunta qué puede quedar registrado y protege la información.</td><td>«¿Prefieres que esto no quede registrado?»</td></tr>
+            <tr><td class="strong">Cometí un error</td><td>No lo ocultes ni dramatices.</td><td>Reconócelo, corrige y observa qué necesita la situación.</td><td>«Creo que intervine en un mal momento. Disculpa.»</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box accent vignette"><span class="lbl">En terreno</span><p>Le preguntas por sus ingresos y ella se pone seria, cambia de tema. No insistes: reconoces que tocaste algo sensible, bajas el ritmo y le preguntas si prefiere que eso no quede registrado. La conversación sigue, distinta pero intacta.</p></div>
+      <div class="bridge"><span class="lbl">En terreno</span><p>Nueve situaciones frecuentes con una respuesta breve, pensadas para consultar en el lugar: la persona está ocupada, pregunta para qué quieres saber, te quedas en blanco, entre otras.</p><button type="button" class="xlink" data-goto="terreno-cambia">Ir a Si algo cambia · Me adapto</button></div>
+      <div class="box info prompt"><span class="lbl">Antes de seguir</span><p>¿Qué harías distinto la próxima vez que "algo no fluya"?</p></div>
+    </section>
+
+    <!-- ===================== LÍMITES ===================== -->
+    <section class="panel" id="limites" data-panel hidden role="tabpanel" aria-labelledby="tab-limites" tabindex="0">
+      <div class="kicker">Antes de seguir a 06</div>
+      <h2 class="h-section">Límites: no toda interacción debe continuar</h2>
+      <p class="lede">La capacidad de detenerse también es una estrategia de interacción. Una buena conversación de campo no se mide por cuánta información obtuviste.</p>
+      <div class="tbl-wrap">
+        <table class="dtbl">
+          <thead><tr><th>Señal</th><th>Tu movimiento</th></tr></thead>
+          <tbody>
+            <tr><td class="strong">Duda</td><td>Pregunta.</td></tr>
+            <tr><td class="strong">Incomodidad</td><td>Desacelera.</td></tr>
+            <tr><td class="strong">Negativa</td><td>Detente.</td></tr>
+            <tr><td class="strong">Información sensible</td><td>Protege.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="box info"><span class="lbl">Consentimiento como proceso</span><p>Una autorización inicial no elimina la necesidad de seguir leyendo señales. Las personas pueden cambiar de opinión, limitar temas, pedir que no registres algo o decidir terminar una conversación.</p></div>
+      <div class="box accent"><span class="lbl">Recuerda</span><p>Tu presencia también modifica la situación. Pregúntate periódicamente cómo estás participando y qué efectos puede estar teniendo tu forma de observar, preguntar o registrar.</p></div>
+      <div class="bridge"><span class="lbl">En terreno</span><p>Qué hacer cuando alguien dice «de eso prefiero no hablar» o necesitas cerrar sin insistir.</p><button type="button" class="xlink" data-goto="terreno-cambia">Ir a Si algo cambia · Me adapto</button></div>
+      <div class="box accent vignette"><span class="lbl">En terreno</span><p>Un entrevistado te cuenta algo que claramente no debía compartir con un desconocido. En vez de tomar nota, le preguntas: «¿prefieres que esto no quede registrado?». Esa pregunta, más que cualquier técnica, es lo que protege a la persona.</p></div>
+    </section>
+
+    <!-- ===================== PASO 06 ===================== -->
+    <section class="panel" id="paso-06" data-panel hidden role="tabpanel" aria-labelledby="tab-paso-06" tabindex="0">
+      <div class="step-head">
+        <div class="step-badge mono">06</div>
+        <div>
+          <div class="step-name">Cierra</div>
+          <div class="step-tagline">Salir también forma parte de la interacción.</div>
+        </div>
+      </div>
+      <p>Cómo te despides deja una huella tan importante como cómo entraste. El cierre es también el primer paso de tu próximo encuentro con esa persona o ese lugar.</p>
+      <div class="micro-obj"><b>Vas a poder</b><em>salir de una interacción cuidando el vínculo y dejando claro qué sigue.</em></div>
+
+      <h3 class="h-sub">Técnica · Cierre 4A</h3>
+      <div class="grid-boxes two">
+        <div class="box"><span class="lbl">Agradecer</span><p>Reconoce el tiempo, la conversación o la posibilidad de estar presente.</p></div>
+        <div class="box"><span class="lbl">Aclarar</span><p>Resume brevemente qué comprendiste o qué queda pendiente.</p></div>
+        <div class="box"><span class="lbl">Acordar</span><p>Si corresponde, define próximos contactos, registros o formas de continuidad.</p></div>
+        <div class="box"><span class="lbl">Anotar</span><p>Después de salir, registra lo ocurrido antes de que se pierdan detalles.</p></div>
+      </div>
+      <div class="grid-boxes two">
+        <div class="box accent"><span class="lbl">Frase posible · completa</span><p>«Muchas gracias por el tiempo. Me ayudó especialmente a entender ____. Antes de irnos, quería confirmar ____. ¿Está bien si volvemos a contactarte por ____?»</p></div>
+        <div class="box accent"><span class="lbl">Frase posible · breve, con usted</span><p>«Muchas gracias por su tiempo y por conversar conmigo. ¿Sería posible volver a conversar en otro momento?»</p></div>
+      </div>
+
+      <div class="box accent vignette"><span class="lbl">En terreno</span><p>Antes de irte, le agradeces el tiempo, le comentas qué fue lo que más te ayudó a entender, y le preguntas si puedes volver otro día. Ella dice que sí. Apenas te alejas, sacas tu cuaderno y anotas lo que acaba de pasar, antes de que se te olvide algo.</p></div>
+      <div class="bridge"><span class="lbl">En terreno</span><p>Apenas salgas, completa la ficha de registro de En terreno.</p><button type="button" class="xlink" data-goto="terreno-despues">Ir a Después · Registro y aprendo</button></div>
+      <div class="box info prompt"><span class="lbl">Antes de seguir</span><p>¿Sueles anotar inmediatamente después de salir de terreno, o dejas pasar tiempo? ¿Qué se pierde cuando esperas?</p></div>
+    </section>
+
+    <!-- ===================== DESPUÉS ===================== -->
+    <section class="panel" id="despues" data-panel hidden role="tabpanel" aria-labelledby="tab-despues" tabindex="0">
+      <div class="kicker">Cierre del ciclo</div>
+      <h2 class="h-section">Revisión: convierte la interacción en aprendizaje</h2>
+      <p class="lede">Registra no solo lo que dijeron las personas. Registra también la situación y tus propias decisiones.</p>
+      <div class="tbl-wrap">
+        <table class="dtbl">
+          <thead><tr><th>Registra</th><th>Pregúntate</th></tr></thead>
+          <tbody>
+            <tr><td class="strong">Situación</td><td>¿Qué estaba ocurriendo?</td></tr>
+            <tr><td class="strong">Actores</td><td>¿Quiénes participaron y qué relaciones observé?</td></tr>
+            <tr><td class="strong">Mi actuación</td><td>¿Qué hice, pregunté o decidí?</td></tr>
+            <tr><td class="strong">Respuesta</td><td>¿Cómo reaccionaron las otras personas?</td></tr>
+            <tr><td class="strong">Interpretación</td><td>¿Qué creo que estaba pasando? ¿Qué evidencia tengo?</td></tr>
+            <tr><td class="strong">Aprendizaje</td><td>¿Qué repetiría y qué haría diferente?</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="box info"><span class="lbl">Distingue</span><p>Descripción: lo que viste o escuchaste. Interpretación: lo que crees que significa. Mantener esa diferencia te ayuda a revisar tus propias lecturas.</p></div>
+
+            <div class="bridge"><span class="lbl">En terreno</span><p>Primero completa la ficha en En terreno · Después. Esta sección te ayuda a leerla: qué mirar en cada dimensión y cómo separar lo que viste de lo que interpretas.</p><button type="button" class="xlink" data-goto="terreno-despues">Ir a la ficha de registro</button></div>
+
+      <div class="bridge"><span class="lbl">En terreno</span><p>La autoevaluación está en Mi brújula: marca cómo te fue en cada momento y la herramienta te indica qué pasos de la ruta conviene repasar.</p><button type="button" class="xlink" data-goto="terreno-brujula">Ir a Mi brújula</button></div>
+      <div class="box info prompt" style="margin-top:16px;"><span class="lbl">Antes de seguir</span><p>¿Cuál fue el paso más difícil hoy? ¿Qué vas a intentar distinto en tu próxima salida?</p></div>
+    </section>
+
+    <!-- ===================== FACILITACIÓN ===================== -->
+    <section class="panel" id="facilitacion" data-panel hidden role="tabpanel" aria-labelledby="tab-facilitacion" tabindex="0">
+      <div class="kicker">Para quien facilita</div>
+      <h2 class="h-section">Guía breve para el uso de Brújula en clases</h2>
+      <div class="facilit">
+        <p>Esta guía puede acompañar tanto un trabajo de campo individual como una asignatura de metodología. Si te toca facilitar su uso en un curso, esta secuencia funciona antes y después de la salida a terreno.</p>
+
+        <h3 class="h-sub">Antes de la salida · ~20 minutos</h3>
+        <div class="tbl-wrap">
+          <table class="dtbl">
+            <thead><tr><th>Momento</th><th>Qué hacer</th></tr></thead>
+            <tbody>
+              <tr><td class="strong">Problematiza</td><td>Pide que recuerden una situación en la que no supieron cómo acercarse a alguien. ¿Qué hicieron?</td></tr>
+              <tr><td class="strong">Diálogo</td><td>Presenta la ruta completa (los 6 pasos) y modela en voz alta uno de ellos — por ejemplo, la Presentación en tres capas — con un caso real o inventado.</td></tr>
+              <tr><td class="strong">Práctica breve</td><td>En parejas, que ensayen su propia presentación en tres capas, una vez con tú y otra con usted, y se den una retroalimentación de un minuto.</td></tr>
+              <tr><td class="strong">Sintetiza</td><td>Cierra recordando que la brújula no reemplaza el juicio en terreno: orienta cuando algo cambia. Pide que guarden Mi brújula como captura en el teléfono antes de salir.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="h-sub">Después de la salida · ~30 minutos</h3>
+        <div class="tbl-wrap">
+          <table class="dtbl">
+            <thead><tr><th>Momento</th><th>Qué hacer</th></tr></thead>
+            <tbody>
+              <tr><td class="strong">Diálogo</td><td>En parejas o grupos pequeños, que completen la ficha de registro (En terreno · Después) sobre una interacción real de esa salida y se autoevalúen en Mi brújula. Pueden copiar o imprimir ambas para entregarlas.</td></tr>
+              <tr><td class="strong">Sintetiza</td><td>Pide que compartan un aprendizaje y un ajuste — no el relato completo, solo eso.</td></tr>
+              <tr><td class="strong">Avanza</td><td>Cierra con una pregunta abierta: ¿qué paso de la brújula necesitas reforzar en la próxima salida?</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="h-sub">Rúbrica formativa</h3>
+        <p>Para observar o evaluar de forma formativa, puedes usar los mismos seis pasos como criterios, en lugar de crear una pauta nueva.</p>
+        <div class="tbl-wrap">
+          <table class="dtbl">
+            <thead><tr><th>Paso</th><th>Inicial</th><th>En desarrollo</th><th>Logrado</th></tr></thead>
+            <tbody>
+              <tr><td class="strong">Observa</td><td>Interviene sin mirar el contexto.</td><td>Nota algunos elementos del escenario.</td><td>Lee espacio, actores, actividad y su posición antes de actuar.</td></tr>
+              <tr><td class="strong">Entra</td><td>Se presenta de forma confusa o excesiva.</td><td>Se presenta, pero sin verificar si es buen momento.</td><td>Se presenta con claridad y pregunta si es buen momento.</td></tr>
+              <tr><td class="strong">Vincúlate</td><td>Extrae información sin reconocer el ritmo.</td><td>Reconoce señales, pero no ajusta su ritmo.</td><td>Ajusta su entrada según las señales de apertura o límite.</td></tr>
+              <tr><td class="strong">Conversa</td><td>Sostiene la conversación solo con preguntas.</td><td>Escucha, pero rara vez profundiza en lo dicho.</td><td>Alterna apertura, escucha, profundización y verificación.</td></tr>
+              <tr><td class="strong">Recalcula</td><td>Se detiene o insiste sin ajustar estrategia.</td><td>Reconoce la dificultad, pero no siempre actúa.</td><td>Ajusta su estrategia y la registra como información válida.</td></tr>
+              <tr><td class="strong">Cierra</td><td>Sale sin agradecer ni aclarar acuerdos.</td><td>Agradece, pero no registra después.</td><td>Agradece, aclara, acuerda próximos pasos y registra al salir.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== EN TERRENO · ANTES ===================== -->
+    <section class="panel terreno" id="terreno-antes" data-panel hidden role="tabpanel" aria-labelledby="tab-terreno-antes" tabindex="0">
+      <div class="t-head">
+        <div class="t-kicker">En terreno · Antes</div>
+        <h2>Primero leo la situación</h2>
+        <div class="moments" aria-hidden="true"><span class="on"><b>Antes</b>Leo la situación</span><span class=""><b>Durante</b>Escucho y converso</span><span class=""><b>Si algo cambia</b>Me adapto</span><span class=""><b>Después</b>Registro y aprendo</span></div>
+      </div>
+      <p class="t-quote">Interactuar en terreno no significa tener siempre la frase correcta ni seguir un guion. Implica observar lo que ocurre, escuchar, tomar decisiones y adaptar tu manera de participar.</p>
+      <p class="t-intro">En el trabajo de campo encontrarás personas y situaciones que no puedes anticipar completamente. Puedes preparar lo que quieres conocer y pensar cómo acercarte, pero cada interacción será diferente. Por eso, más que memorizar respuestas, necesitas ampliar tus recursos para actuar con claridad, respeto y flexibilidad.</p>
+      <p>Antes de acercarte a alguien, observa. No todas las personas ni todos los momentos requieren la misma forma de aproximarse.</p>
+      <h3 class="h-sub">Antes de acercarme, puedo preguntarme</h3>
+      <div class="tbl-wrap">
+        <table class="dtbl">
+          <tbody>
+            <tr><td class="strong">¿Qué está ocurriendo aquí?</td><td>¿Qué están haciendo las personas? ¿Cómo se relacionan? ¿Qué está pasando en el lugar?</td></tr>
+            <tr><td class="strong">¿Con quién quiero interactuar y para qué?</td><td>¿Qué me interesa conocer de esta persona o de esta situación?</td></tr>
+            <tr><td class="strong">¿Parece un buen momento?</td><td>¿La persona está disponible? ¿Está trabajando, descansando, atendiendo o conversando?</td></tr>
+            <tr><td class="strong">¿Estoy interrumpiendo algo?</td><td>¿Conviene acercarme ahora, esperar o buscar otro momento?</td></tr>
+            <tr><td class="strong">¿Cómo podría acercarme?</td><td>¿Necesito presentarme primero, pedir permiso o esperar una oportunidad?</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="principle">No siempre acercarse inmediatamente es la mejor decisión. Observar también forma parte del trabajo en terreno.</p>
+      <div class="bridge bridge--back"><span class="lbl">Para profundizar en la Brújula</span><div class="xlinks"><button type="button" class="xlink" data-goto="paso-01">01 · Observa: Pausa 5×5</button><button type="button" class="xlink" data-goto="paso-03">03 · Vincúlate: semáforo de señales</button></div></div>
+    </section>
+
+    <!-- ===================== EN TERRENO · DURANTE ===================== -->
+    <section class="panel terreno" id="terreno-durante" data-panel hidden role="tabpanel" aria-labelledby="tab-terreno-durante" tabindex="0">
+      <div class="t-head">
+        <div class="t-kicker">En terreno · Durante</div>
+        <h2>Tengo recursos, no un guion</h2>
+        <div class="moments" aria-hidden="true"><span class=""><b>Antes</b>Leo la situación</span><span class="on"><b>Durante</b>Escucho y converso</span><span class=""><b>Si algo cambia</b>Me adapto</span><span class=""><b>Después</b>Registro y aprendo</span></div>
+      </div>
+      <p class="t-intro">Puedes orientarte con esta secuencia. No necesitas seguirla mecánicamente: úsala como apoyo y adáptala a cada situación.</p>
+      <ol class="seq"><li>Observar</li><li>Acercarme</li><li>Presentarme</li><li>Explicar</li><li>Pedir</li><li>Escuchar</li><li>Profundizar</li><li>Cerrar</li></ol>
+      <div class="seg" role="group" aria-label="Forma de tratamiento">
+        <button type="button" data-reg="tu" aria-pressed="false">Tú</button>
+        <button type="button" data-reg="usted" aria-pressed="true">Usted</button>
+      </div>
+      <div class="tbl-wrap"><table class="dtbl"><tbody id="frases-durante"></tbody></table></div>
+      <p class="principle">No necesito memorizar qué decir. Necesito escuchar y contar con recursos para decidir qué decir.</p>
+      <div class="bridge bridge--back"><span class="lbl">Para profundizar en la Brújula</span><div class="xlinks"><button type="button" class="xlink" data-goto="paso-02">02 · Entra: presentación en tres capas</button><button type="button" class="xlink" data-goto="paso-04">04 · Conversa: escucha en tres capas</button></div></div>
+    </section>
+
+    <!-- ===================== EN TERRENO · SI ALGO CAMBIA ===================== -->
+    <section class="panel terreno" id="terreno-cambia" data-panel hidden role="tabpanel" aria-labelledby="tab-terreno-cambia" tabindex="0">
+      <div class="t-head">
+        <div class="t-kicker">En terreno · Si algo cambia</div>
+        <h2>Me adapto</h2>
+        <div class="moments" aria-hidden="true"><span class=""><b>Antes</b>Leo la situación</span><span class=""><b>Durante</b>Escucho y converso</span><span class="on"><b>Si algo cambia</b>Me adapto</span><span class=""><b>Después</b>Registro y aprendo</span></div>
+      </div>
+      <p class="t-intro">En terreno aparecerán situaciones que no puedes anticipar. Que una conversación no avance como imaginabas no significa necesariamente que esté saliendo mal.</p>
+      <div class="tbl-wrap">
+        <table class="dtbl">
+          <thead><tr><th>Si ocurre esto</th><th>Puedo hacer esto</th></tr></thead>
+          <tbody>
+            <tr><td class="strong">«Estoy ocupado/a.»</td><td>Reconoce la situación. Puedes preguntar si existe otro momento que le acomode más o agradecer y retirarte.</td></tr>
+            <tr><td class="strong">Me responde muy brevemente.</td><td>Cambia la forma de preguntar. Invita a describir una experiencia o pide un ejemplo concreto.
+              <div class="ej">
+                <span class="ej-lbl">Por ejemplo</span>
+                <div class="vs"><span class="no">En lugar de <q>¿Es difícil trabajar acá?</q></span><span>prueba <q>¿Cómo es un día de trabajo para usted, desde que llega hasta que se va?</q></span></div>
+                <div class="vs"><span class="no">En lugar de <q>¿Le gusta este barrio?</q></span><span>prueba <q>¿Me podría contar cómo era el barrio cuando llegó?</q></span></div>
+                <div class="vs"><span>Para pedir un ejemplo <q>¿Recuerda alguna vez en que haya pasado eso? ¿Qué ocurrió?</q></span></div>
+              </div></td></tr>
+            <tr><td class="strong">«¿Y para qué quieren saber eso?»</td><td>Explica nuevamente, de manera sencilla, quién eres, qué estás haciendo y para qué quieres conversar.</td></tr>
+            <tr><td class="strong">Hay un silencio.</td><td>No necesitas llenarlo inmediatamente. Da tiempo. Si continúa, reformula la pregunta o propone pasar a otro tema.</td></tr>
+            <tr><td class="strong">No entendí.</td><td>No finjas que entendiste. Pregunta: «Cuando dice ____, ¿a qué se refiere?»</td></tr>
+            <tr><td class="strong">La conversación tomó otro rumbo.</td><td>Antes de redirigirla, escucha. Pregúntate si lo que apareció puede ayudarte a comprender mejor la situación. Si necesitas volver al tema, conecta lo que la persona dijo con lo que te interesa conocer.
+              <div class="ej">
+                <span class="ej-lbl">Para volver al tema</span>
+                <q>Eso que me cuenta sobre ____ me ayuda a entender mucho. ¿Cómo se relaciona con ____?</q>
+                <q>Me gustaría volver un momento a algo que mencionó antes, sobre ____.</q>
+                <q>Antes de que se me olvide, quería preguntarle por ____, que conversábamos al principio.</q>
+              </div></td></tr>
+            <tr><td class="strong">«De eso prefiero no hablar.»</td><td>Respeta el límite. Puedes cambiar de tema o cerrar la conversación. No necesitas insistir.
+              <div class="ej">
+                <span class="ej-lbl">Por ejemplo</span>
+                <q>Claro, no hay problema. Gracias por decírmelo.</q>
+                <q>Por supuesto. ¿Le parece si conversamos sobre ____?</q>
+                <q>Entiendo. Si prefiere, lo dejamos hasta aquí. Muchas gracias por su tiempo.</q>
+              </div></td></tr>
+            <tr><td class="strong">Me quedé en blanco.</td><td>Vuelve a algo que la persona ya dijo: «Antes mencionó que ____…» o «¿Y qué ocurrió después?»</td></tr>
+            <tr><td class="strong">No sé cómo terminar.</td><td>Agradece el tiempo y, si corresponde, pregunta si sería posible volver a conversar en otro momento.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="principle">El propósito de la interacción no está por encima de los límites de la otra persona.</p>
+      <div class="bridge bridge--back"><span class="lbl">Para profundizar en la Brújula</span><div class="xlinks"><button type="button" class="xlink" data-goto="paso-05">05 · Recalcula: qué evitar y qué probar</button><button type="button" class="xlink" data-goto="limites">Límites: consentimiento como proceso</button><button type="button" class="xlink" data-goto="paso-06">06 · Cierra: técnica 4A</button></div></div>
+    </section>
+
+    <!-- ===================== EN TERRENO · DESPUÉS ===================== -->
+    <section class="panel terreno" id="terreno-despues" data-panel hidden role="tabpanel" aria-labelledby="tab-terreno-despues" tabindex="0">
+      <div class="t-head">
+        <div class="t-kicker">En terreno · Después</div>
+        <h2>Registro y aprendo de lo ocurrido</h2>
+        <div class="moments" aria-hidden="true"><span class=""><b>Antes</b>Leo la situación</span><span class=""><b>Durante</b>Escucho y converso</span><span class=""><b>Si algo cambia</b>Me adapto</span><span class="on"><b>Después</b>Registro y aprendo</span></div>
+      </div>
+      <p class="t-intro">Después de una interacción significativa, reserva algunos minutos para registrar lo ocurrido. No anotes solamente qué información obtuviste: registra también cómo ocurrió la interacción.</p>
+      <p class="status no-print">Lo que escribas se guarda solo en este navegador. Puedes copiarlo o imprimirlo al terminar.</p>
+      <div class="ficha" id="ficha">
+        <div class="field"><label for="f-fecha">Fecha, lugar y situación</label><input id="f-fecha" data-field="fecha" type="text"></div>
+        <div class="field"><label for="f-inicio">¿Cómo se inició la interacción?</label><textarea id="f-inicio" data-field="inicio"></textarea></div>
+        <div class="field"><label for="f-facilito">¿Qué hice que pareció facilitarla?</label><textarea id="f-facilito" data-field="facilito"></textarea></div>
+        <div class="field"><label for="f-dificil">¿Hubo algún momento difícil, incómodo o inesperado?</label><textarea id="f-dificil" data-field="dificil"></textarea></div>
+        <div class="field"><label for="f-frente">¿Qué hice frente a esa situación?</label><textarea id="f-frente" data-field="frente"></textarea></div>
+        <div class="field"><label for="f-senales">¿Qué señales de la otra persona fui observando?</label><textarea id="f-senales" data-field="senales"></textarea></div>
+        <div class="field"><label for="f-atencion">¿Qué información o experiencia me llamó especialmente la atención?</label><textarea id="f-atencion" data-field="atencion"></textarea></div>
+        <div class="field"><label for="f-preguntas">¿Qué preguntas nuevas me surgieron?</label><textarea id="f-preguntas" data-field="preguntas"></textarea></div>
+        <div class="ficha-block">
+          <h4>Sobre mi propia manera de interactuar</h4>
+          <div class="trio">
+            <div class="field"><label for="f-repetir">Algo que volvería a hacer</label><textarea id="f-repetir" data-field="repetir"></textarea></div>
+            <div class="field"><label for="f-distinto">Algo que intentaría hacer distinto</label><textarea id="f-distinto" data-field="distinto"></textarea></div>
+            <div class="field"><label for="f-retomar">Algo que me gustaría retomar</label><textarea id="f-retomar" data-field="retomar"></textarea></div>
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn primary" id="ficha-copiar">Copiar mi registro</button>
+        <button type="button" class="btn" data-print>Imprimir o guardar PDF</button>
+        <button type="button" class="btn quiet" id="ficha-nueva">Empezar una ficha nueva</button>
+      </div>
+      <p class="status" id="ficha-status" role="status" aria-live="polite"></p>
+      <div class="bridge bridge--back"><span class="lbl">Para profundizar en la Brújula</span><div class="xlinks"><button type="button" class="xlink" data-goto="despues">Revisión: descripción e interpretación, y semáforo de autoevaluación</button></div></div>
+    </section>
+
+    <!-- ===================== EN TERRENO · MI BRÚJULA ===================== -->
+    <section class="panel terreno" id="terreno-brujula" data-panel hidden role="tabpanel" aria-labelledby="tab-terreno-brujula" tabindex="0">
+      <div class="t-head">
+        <div class="t-kicker">En terreno · Antes, durante y al volver</div>
+        <h2>Mi brújula para interactuar en terreno</h2>
+        <p style="margin:0; opacity:.85;">Antes de salir, léela como guía y guárdala como captura en tu teléfono. Al volver, úsala para autoevaluarte: marca cómo te fue en cada momento.</p>
+      </div>
+      <div class="compass-card">
+        <div class="row"><div class="k"><b>Antes</b><span>Observo</span><i>paso 01</i></div><div class="v">¿Qué está ocurriendo? ¿Es un buen momento? ¿Cómo puedo acercarme?
+          <div class="check"><p>Observé la situación antes de acercarme y elegí un momento adecuado.</p><span class="pill-group" data-eval="antes" data-target="paso-01" data-name="Antes · Observo"><button type="button" class="pill" data-c="g">lo logré</button><button type="button" class="pill" data-c="a">en parte</button><button type="button" class="pill" data-c="r">me costó</button></span></div>
+        </div></div>
+        <div class="row"><div class="k"><b>Al comenzar</b><span>Explico</span><i>paso 02</i></div><div class="v">¿Quién soy? ¿Qué estoy haciendo? ¿Qué estoy pidiendo?
+          <div class="check"><p>Expliqué con claridad quién era, qué estaba haciendo y qué pedía.</p><span class="pill-group" data-eval="comenzar" data-target="paso-02" data-name="Al comenzar · Explico"><button type="button" class="pill" data-c="g">lo logré</button><button type="button" class="pill" data-c="a">en parte</button><button type="button" class="pill" data-c="r">me costó</button></span></div>
+        </div></div>
+        <div class="row"><div class="k"><b>Durante</b><span>Escucho</span><i>pasos 03 y 04</i></div><div class="v">¿Qué me está diciendo? ¿Qué puedo recuperar? ¿Qué necesito comprender mejor?
+          <div class="check"><p>Escuché, retomé lo que la persona decía y pedí aclarar lo que no entendí.</p><span class="pill-group" data-eval="durante" data-target="paso-04" data-name="Durante · Escucho"><button type="button" class="pill" data-c="g">lo logré</button><button type="button" class="pill" data-c="a">en parte</button><button type="button" class="pill" data-c="r">me costó</button></span></div>
+        </div></div>
+        <div class="row"><div class="k"><b>Si algo cambia</b><span>Me adapto</span><i>paso 05 y límites</i></div><div class="v">¿Necesito esperar, reformular, preguntar, cambiar de tema, respetar un límite o cerrar?
+          <div class="check"><p>Ajusté mi forma de participar cuando algo cambió y respeté los límites de la otra persona.</p><span class="pill-group" data-eval="cambia" data-target="paso-05" data-name="Si algo cambia · Me adapto"><button type="button" class="pill" data-c="g">lo logré</button><button type="button" class="pill" data-c="a">en parte</button><button type="button" class="pill" data-c="r">me costó</button></span></div>
+        </div></div>
+        <div class="row"><div class="k"><b>Al terminar</b><span>Cierro y registro</span><i>paso 06</i></div><div class="v">Agradezco. Registro lo ocurrido. Pienso qué aprendí de la interacción.
+          <div class="check"><p>Agradecí, cerré cuidando el vínculo y registré lo ocurrido.</p><span class="pill-group" data-eval="terminar" data-target="paso-06" data-name="Al terminar · Cierro y registro"><button type="button" class="pill" data-c="g">lo logré</button><button type="button" class="pill" data-c="a">en parte</button><button type="button" class="pill" data-c="r">me costó</button></span></div>
+        </div></div>
+      </div>
+      <div class="box info result" id="eval-result" hidden><span class="lbl">Para tu próxima salida</span><p id="eval-msg" style="margin:0;"></p><ul id="eval-list"></ul></div>
+      <p class="status no-print">Tus marcas se guardan solo en este navegador.</p>
+      <div class="actions">
+        <button type="button" class="btn" data-print>Imprimir o guardar PDF</button>
+        <button type="button" class="btn quiet" id="eval-reset">Borrar mis marcas</button>
+      </div>
+      <p class="principle">No necesito controlar la interacción. Necesito observar, escuchar y contar con recursos para decidir cómo actuar.</p>
+      <p class="principle">Una interacción que no produjo la información esperada no es necesariamente una interacción fallida. También se aprende al reconocer qué ocurrió, cómo se interpretó y qué podría intentarse en una próxima oportunidad.</p>
+    </section>
+
+  </main>
+</div>
+
+<footer>observar · interpretar · decidir · interactuar · revisar</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var TABS = ['inicio','paso-01','paso-02','paso-03','paso-04','paso-05','limites','paso-06','despues','facilitacion','terreno-antes','terreno-durante','terreno-cambia','terreno-despues','terreno-brujula'];
+  var ALIAS = { consulta:'terreno-brujula' };
+  var items = Array.prototype.slice.call(document.querySelectorAll('.route-item'));
+  var panels = {};
+  TABS.forEach(function(t){ panels[t] = document.getElementById(t); });
+
+  function activate(tab, opts){
+    if(ALIAS[tab]) tab = ALIAS[tab];
+    if(TABS.indexOf(tab) === -1) tab = 'inicio';
+    TABS.forEach(function(t){
+      if(panels[t]) panels[t].hidden = (t !== tab);
+    });
+    items.forEach(function(btn){
+      var on = btn.getAttribute('data-tab') === tab;
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      btn.setAttribute('tabindex', on ? '0' : '-1');
+    });
+    var activeBtn = document.querySelector('.route-item[data-tab="' + tab + '"]');
+    if(activeBtn){ activeBtn.scrollIntoView({ block:'nearest', inline:'center', behavior: (opts && opts.silent) ? 'auto' : 'smooth' }); }
+    if(!opts || !opts.silent){
+      try{ history.replaceState(null, '', '#' + tab); }catch(e){}
+      var panelEl = panels[tab];
+      if(panelEl){
+        var headerEl = document.querySelector('header.top');
+        var railEl = document.getElementById('routebar');
+        var offset = (headerEl ? headerEl.offsetHeight : 0) + 14;
+        var mobileNav = window.matchMedia('(max-width: 879px)').matches;
+        if(mobileNav && railEl){ offset += railEl.offsetHeight; }
+        var rect = panelEl.getBoundingClientRect();
+        var targetY = window.scrollY + rect.top - offset;
+        window.scrollTo({ top: Math.max(targetY, 0), behavior:'smooth' });
+      }
+    }
+  }
+
+  items.forEach(function(btn){
+    btn.addEventListener('click', function(){ activate(btn.getAttribute('data-tab')); });
+  });
+
+  Array.prototype.slice.call(document.querySelectorAll('[data-goto]')).forEach(function(b){
+    b.addEventListener('click', function(){ activate(b.getAttribute('data-goto')); if(b.getAttribute('data-goto')==='terreno-despues'){ setTimeout(function(){ if(window.__growFicha) window.__growFicha(); },0); } });
+  });
+
+  var initial = (location.hash || '').replace('#','');
+  if(ALIAS[initial]) initial = ALIAS[initial];
+  activate(TABS.indexOf(initial) !== -1 ? initial : 'inicio', { silent:true });
+
+  // ---- autoevaluación en Mi brújula ----
+  var EVAL_KEY = 'brujula-autoeval-v1';
+  var ev = {};
+  try{ ev = JSON.parse(localStorage.getItem(EVAL_KEY) || '{}') || {}; }catch(e){ ev = {}; }
+  var groups = Array.prototype.slice.call(document.querySelectorAll('[data-eval]'));
+  var LBL = { g:'lo logré', a:'en parte', r:'me costó' };
+  function paintEval(){
+    groups.forEach(function(g){
+      var k = g.getAttribute('data-eval');
+      Array.prototype.slice.call(g.querySelectorAll('.pill')).forEach(function(p){
+        var on = ev[k] === p.getAttribute('data-c');
+        p.classList.toggle('active', on); p.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    });
+    var box = document.getElementById('eval-result'), list = document.getElementById('eval-list'), msg = document.getElementById('eval-msg');
+    var marked = groups.filter(function(g){ return ev[g.getAttribute('data-eval')]; });
+    if(!marked.length){ box.hidden = true; return; }
+    box.hidden = false;
+    var weak = marked.filter(function(g){ return ev[g.getAttribute('data-eval')] !== 'g'; });
+    list.innerHTML = '';
+    if(!weak.length){ msg.textContent = 'Marcaste todos los momentos como logrados. En tu próxima salida, intenta sostener lo que funcionó y registra por qué funcionó.'; return; }
+    msg.textContent = 'Estos momentos quedaron en parte o te costaron. Vuelve a la ruta antes de salir otra vez:';
+    weak.forEach(function(g){
+      var li = document.createElement('li');
+      var t = document.createElement('span'); t.textContent = g.getAttribute('data-name') + ' (' + LBL[ev[g.getAttribute('data-eval')]] + ')';
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'xlink'; b.textContent = 'Repasar ' + g.closest('.row').querySelector('.k i').textContent;
+      b.addEventListener('click', function(){ activate(g.getAttribute('data-target')); });
+      li.appendChild(t); li.appendChild(b); list.appendChild(li);
+    });
+  }
+  groups.forEach(function(g){
+    var k = g.getAttribute('data-eval');
+    Array.prototype.slice.call(g.querySelectorAll('.pill')).forEach(function(p){
+      p.addEventListener('click', function(){
+        var c = p.getAttribute('data-c');
+        ev[k] = (ev[k] === c) ? null : c;
+        try{ localStorage.setItem(EVAL_KEY, JSON.stringify(ev)); }catch(e){}
+        paintEval();
+      });
+    });
+  });
+  var bReset = document.getElementById('eval-reset');
+  if(bReset) bReset.addEventListener('click', function(){
+    if(!window.confirm('¿Borrar tus marcas de autoevaluación?')) return;
+    ev = {}; try{ localStorage.removeItem(EVAL_KEY); }catch(e){}
+    paintEval();
+  });
+  try{ paintEval(); }catch(e){}
+
+  // ---- imprimir ----
+  Array.prototype.slice.call(document.querySelectorAll('[data-print]')).forEach(function(b){
+    b.addEventListener('click', function(){ window.print(); });
+  });
+
+  // ---- ficha de registro ----
+  var FICHA_KEY = 'brujula-ficha-v1';
+  var ficha = {};
+  try{ ficha = JSON.parse(localStorage.getItem(FICHA_KEY) || '{}') || {}; }catch(e){ ficha = {}; }
+  var fields = Array.prototype.slice.call(document.querySelectorAll('#ficha [data-field]'));
+  var fstatus = document.getElementById('ficha-status');
+  function grow(el){ if(el.tagName === 'TEXTAREA'){ el.style.height = 'auto'; el.style.height = (el.scrollHeight + 2) + 'px'; } }
+  fields.forEach(function(el){
+    var k = el.getAttribute('data-field');
+    if(ficha[k]) el.value = ficha[k];
+    grow(el);
+    el.addEventListener('input', function(){
+      ficha[k] = el.value;
+      try{ localStorage.setItem(FICHA_KEY, JSON.stringify(ficha)); }catch(e){}
+      grow(el);
+    });
+  });
+  function say(msg){ if(fstatus){ fstatus.textContent = msg; setTimeout(function(){ if(fstatus.textContent === msg) fstatus.textContent = ''; }, 3500); } }
+  function fichaTexto(){
+    var out = ['EN TERRENO · FICHA DE REGISTRO', ''];
+    fields.forEach(function(el){
+      var lab = document.querySelector('label[for="' + el.id + '"]');
+      var t = lab ? lab.childNodes[0].textContent.trim() : el.getAttribute('data-field');
+      out.push(t);
+      out.push((el.value || '').trim() || '—');
+      out.push('');
+    });
+    var evl = groups.filter(function(g){ return ev[g.getAttribute('data-eval')]; });
+    if(evl.length){
+      out.push('MI BRÚJULA · AUTOEVALUACIÓN');
+      evl.forEach(function(g){ out.push(g.getAttribute('data-name') + ': ' + LBL[ev[g.getAttribute('data-eval')]]); });
+    }
+    return out.join('\n');
+  }
+  var bCopy = document.getElementById('ficha-copiar');
+  if(bCopy) bCopy.addEventListener('click', function(){
+    var txt = fichaTexto();
+    function fallback(){
+      var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); say('Registro copiado. Pégalo donde lo necesites.'); }
+      catch(e){ say('No se pudo copiar. Usa Imprimir o guardar PDF.'); }
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){ say('Registro copiado. Pégalo donde lo necesites.'); }, fallback);
+    } else { fallback(); }
+  });
+  var bNew = document.getElementById('ficha-nueva');
+  if(bNew) bNew.addEventListener('click', function(){
+    if(!window.confirm('¿Borrar la ficha actual para registrar una nueva interacción?')) return;
+    ficha = {};
+    try{ localStorage.removeItem(FICHA_KEY); }catch(e){}
+    fields.forEach(function(el){ el.value = ''; grow(el); });
+    say('Ficha en blanco.');
+  });
+  // recalcula alturas al abrir la pestaña Después (los textareas ocultos miden 0)
+  items.forEach(function(btn){
+    if(btn.getAttribute('data-tab') === 'terreno-despues'){
+      btn.addEventListener('click', function(){ setTimeout(function(){ fields.forEach(grow); }, 0); });
+    }
+  });
+  window.__growFicha = function(){ fields.forEach(grow); };
+  if(!panels['terreno-despues'].hidden){ fields.forEach(grow); }
+
+  // ---- botiquín de frases (tú / usted) ----
+  var FRASES = [
+    ['Acercarme', 'Hola, disculpa, ¿te puedo hacer una consulta?', 'Hola, disculpe, ¿le puedo hacer una consulta?'],
+    ['Presentarme', 'Hola, soy ______. Soy estudiante de Antropología de la Universidad Alberto Hurtado.', 'Hola, mi nombre es ______. Soy estudiante de Antropología de la Universidad Alberto Hurtado.'],
+    ['Explicar', 'Estamos haciendo un trabajo de campo sobre ______ y queremos conocer cómo se desarrolla esta actividad.', 'Estamos realizando un trabajo de campo sobre ______ y queremos conocer cómo se desarrolla esta actividad.'],
+    ['Pedir conversar', '¿Tendrías unos minutos para que conversemos?', '¿Tendría unos minutos para que conversemos?'],
+    ['Profundizar', 'Recién mencionaste que ______. ¿Me podrías contar un poco más?', 'Recién mencionó que ______. ¿Me podría contar un poco más?'],
+    ['Comprender', 'No entendí bien esa parte. ¿Me la podrías explicar?', 'No entendí bien esa parte. ¿Me la podría explicar?'],
+    ['Pedir un ejemplo', '¿Recuerdas alguna situación en que haya ocurrido eso?', '¿Recuerda alguna situación en que haya ocurrido eso?'],
+    ['Disculparme', [
+        'Perdón, creo que te interrumpí. ¿Prefieres que vuelva en otro momento?',
+        'Disculpa, creo que mi pregunta no fue oportuna. Podemos dejarla de lado.',
+        'Perdón, creo que no me expliqué bien. Lo que quería preguntarte es…'
+      ], [
+        'Perdón, creo que lo/la interrumpí. ¿Prefiere que vuelva en otro momento?',
+        'Disculpe, creo que mi pregunta no fue oportuna. Podemos dejarla de lado.',
+        'Perdón, creo que no me expliqué bien. Lo que quería preguntarle es…'
+      ]],
+    ['Cerrar', 'Muchas gracias por tu tiempo y por conversar conmigo.', 'Muchas gracias por su tiempo y por conversar conmigo.']
+  ];
+  var REG_KEY = 'brujula-registro-v1';
+  var reg = 'usted';
+  try{ reg = localStorage.getItem(REG_KEY) || 'usted'; }catch(e){}
+  var bot = document.getElementById('frases-durante');
+  var segBtns = Array.prototype.slice.call(document.querySelectorAll('.seg [data-reg]'));
+  function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function renderBot(){
+    var idx = reg === 'tu' ? 1 : 2, html = '';
+    FRASES.forEach(function(f){
+      var v = f[idx], cell;
+      if(Array.isArray(v)){ cell = '<ul class="fr">' + v.map(function(x){ return '<li>«' + esc(x) + '»</li>'; }).join('') + '</ul>'; }
+      else { cell = '«' + esc(v) + '»'; }
+      html += '<tr><td class="strong">' + esc(f[0]) + '</td><td>' + cell + '</td></tr>';
+    });
+    bot.innerHTML = html;
+    segBtns.forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-reg') === reg ? 'true' : 'false'); });
+  }
+  segBtns.forEach(function(b){
+    b.addEventListener('click', function(){
+      reg = b.getAttribute('data-reg');
+      try{ localStorage.setItem(REG_KEY, reg); }catch(e){}
+      renderBot();
+    });
+  });
+  if(bot) renderBot();
+
+})();
+</script>
+</body>
+</html>
