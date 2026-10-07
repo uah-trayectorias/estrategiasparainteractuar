@@ -416,6 +416,76 @@
     .field textarea, .field input{ border:1px solid #999; }
     .ficha-block{ break-inside:avoid; }
   }
+
+
+  /* ===== REDISEÑO: acceso por desafíos ===== */
+  .challenge-hub{margin:18px 0 32px;padding:26px;border:1px solid var(--rule);border-radius:20px;background:var(--bg-raised);box-shadow:var(--shadow)}
+  .hub-kicker{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.14em;font-weight:700;color:var(--terracotta);margin-bottom:6px}
+  .challenge-hub h2{font-size:clamp(1.7rem,4.5vw,2.35rem);line-height:1.08;margin:0 0 8px}
+  .hub-intro{max-width:60ch;color:var(--ink-soft);margin-bottom:20px}
+  .challenge-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .challenge-card{width:100%;display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;text-align:left;padding:15px;border:1px solid var(--rule);border-radius:14px;background:var(--surface);color:var(--ink);cursor:pointer;box-shadow:0 1px 0 rgba(0,0,0,.02);transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+  .challenge-card:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:var(--shadow)}
+  .challenge-card:focus-visible,.challenge-nav:focus-visible,.hub-link:focus-visible,.return-hub:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .challenge-card.alert{border-color:color-mix(in srgb,var(--terracotta) 45%,var(--rule))}
+  .challenge-num{font-family:"IBM Plex Mono",monospace;font-size:.69rem;font-weight:700;color:var(--gold-strong);width:32px;height:32px;border:1px solid var(--rule);border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .challenge-card.alert .challenge-num{color:var(--terracotta);border-color:var(--terracotta)}
+  .challenge-copy{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .challenge-copy b{font-size:.95rem;line-height:1.25}
+  .challenge-copy small{font-size:.8rem;color:var(--ink-soft);line-height:1.35}
+  .challenge-arrow{font-size:1.2rem;color:var(--gold-strong)}
+  .hub-secondary{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:.84rem;color:var(--ink-soft)}
+  .hub-link{border:0;background:transparent;color:var(--gold-strong);font:inherit;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:5px 3px}
+
+  .routebar-redesign .nav-block-label{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--terracotta);font-weight:700;margin:12px 5px 6px}
+  .nav-now{display:grid;gap:5px}
+  .challenge-nav{border:1px solid transparent;background:transparent;color:var(--ink);display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:center;text-align:left;padding:8px;border-radius:9px;cursor:pointer;font:inherit}
+  .challenge-nav:hover{background:var(--box-accent-bg);border-color:var(--rule)}
+  .challenge-nav span{font-family:"IBM Plex Mono",monospace;font-size:.62rem;color:var(--gold-strong)}
+  .challenge-nav b{font-size:.82rem;font-weight:600;line-height:1.2}
+  .nav-details{border-top:1px solid var(--rule);margin-top:12px;padding-top:10px}
+  .nav-details summary{cursor:pointer;list-style:none;font-size:.82rem;font-weight:700;padding:8px 6px;border-radius:8px;color:var(--ink-soft)}
+  .nav-details summary::-webkit-details-marker{display:none}
+  .nav-details summary::after{content:"+";float:right;font-family:"IBM Plex Mono",monospace;color:var(--gold-strong)}
+  .nav-details[open] summary::after{content:"–"}
+  .nav-details summary:hover{background:var(--box-neutral-bg)}
+  .nav-details-body{display:grid;gap:3px;margin-top:4px}
+  .nav-details .route-item{padding:7px 8px;border-radius:8px}
+  .nav-details .route-item .step-dot{width:24px;height:24px}
+
+  .return-hub-wrap{margin:0 0 16px}
+  .return-hub{border:1px solid var(--rule);background:var(--surface);color:var(--ink-soft);border-radius:999px;padding:7px 12px;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer}
+  .return-hub:hover{border-color:var(--gold);color:var(--ink)}
+
+  @media(max-width:879px){
+    .shell{padding-inline:14px}
+    .routebar-redesign{display:flex;gap:8px;align-items:center;padding:8px 14px 10px;margin-inline:-14px;overflow-x:auto}
+    .routebar-redesign .route-home{flex:none;width:auto;padding:7px 10px;background:var(--surface);border-color:var(--rule)}
+    .routebar-redesign .route-home .dot,.routebar-redesign .route-home small{display:none}
+    .routebar-redesign .nav-now{display:flex;gap:6px;flex:none}
+    .routebar-redesign .nav-block-label{display:none}
+    .challenge-nav{display:flex;gap:5px;white-space:nowrap;padding:8px 10px;border:1px solid var(--rule);background:var(--surface);border-radius:999px}
+    .challenge-nav span{display:none}.challenge-nav b{font-size:.78rem}
+    .nav-details{display:none}
+    .challenge-hub{padding:20px 16px;border-radius:16px;margin-top:14px}
+    .challenge-grid{grid-template-columns:1fr}
+    .challenge-card{padding:14px 13px}
+    .challenge-copy small{font-size:.78rem}
+    .panel{padding-top:20px}
+  }
+
+  .intro-compact{display:grid;gap:12px;margin:18px 0 10px}
+  @media(min-width:620px){.intro-compact{grid-template-columns:1fr 1fr}}
+  .intro-card{border:1px solid var(--rule);border-radius:14px;background:var(--surface);padding:15px 16px}
+  .intro-card .lbl{display:block;font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:var(--gold-strong);margin-bottom:5px}
+  .intro-card p{margin:0;color:var(--ink-soft);font-size:.93rem;line-height:1.45}
+
+  @media(max-width:460px){
+    .challenge-card{grid-template-columns:30px 1fr auto;gap:9px}
+    .challenge-num{width:28px;height:28px}
+    .hub-secondary span{width:100%}
+  }
+
 </style>
 </head>
 <body>
@@ -429,83 +499,50 @@
 </header>
 
 <div class="shell">
-  <nav class="routebar" id="routebar" role="tablist" aria-label="Ruta de la guía">
-    <div class="route-group standalone">
-      <button class="route-item" data-tab="inicio" role="tab" id="tab-inicio" aria-controls="inicio">
+  <nav class="routebar routebar-redesign" id="routebar" aria-label="Navegación de la guía">
+      <button class="route-item route-home" data-tab="inicio" type="button">
         <span class="dot" aria-hidden="true"></span>
-        <span class="route-text"><b>Inicio</b><small>Idea central y objetivos</small></span>
+        <span class="route-text"><b>Inicio</b><small>¿Qué necesito resolver?</small></span>
       </button>
-    </div>
 
-    <div class="route-steps">
-      <button class="route-item route-step" data-tab="paso-01" role="tab" id="tab-paso-01" aria-controls="paso-01">
-        <span class="step-dot">01</span>
-        <span class="route-text"><b>Observa</b><small>Lee el escenario antes de intervenir.</small></span>
-      </button>
-      <button class="route-item route-step" data-tab="paso-02" role="tab" id="tab-paso-02" aria-controls="paso-02">
-        <span class="step-dot">02</span>
-        <span class="route-text"><b>Entra</b><small>Hazte legible para los demás.</small></span>
-      </button>
-      <button class="route-item route-step" data-tab="paso-03" role="tab" id="tab-paso-03" aria-controls="paso-03">
-        <span class="step-dot">03</span>
-        <span class="route-text"><b>Vincúlate</b><small>No empieces extrayendo información.</small></span>
-      </button>
-      <button class="route-item route-step" data-tab="paso-04" role="tab" id="tab-paso-04" aria-controls="paso-04">
-        <span class="step-dot">04</span>
-        <span class="route-text"><b>Conversa</b><small>Pregunta sin convertir en interrogatorio.</small></span>
-      </button>
-      <button class="route-item route-step" data-tab="paso-05" role="tab" id="tab-paso-05" aria-controls="paso-05">
-        <span class="step-dot">05</span>
-        <span class="route-text"><b>Recalcula</b><small>Cuando algo no fluye, cambia de estrategia.</small></span>
-      </button>
-      <button class="route-item route-step route-step--limit" data-tab="limites" role="tab" id="tab-limites" aria-controls="limites">
-        <span class="step-dot step-dot--limit">!</span>
-        <span class="route-text"><b>Límites</b><small>No toda interacción debe continuar.</small></span>
-      </button>
-      <button class="route-item route-step" data-tab="paso-06" role="tab" id="tab-paso-06" aria-controls="paso-06">
-        <span class="step-dot">06</span>
-        <span class="route-text"><b>Cierra</b><small>Salir también forma parte de la interacción.</small></span>
-      </button>
-    </div>
+      <div class="nav-block nav-now">
+        <div class="nav-block-label">Herramientas por desafío</div>
+        <button class="challenge-nav" type="button" data-goto="terreno-antes"><span>01</span><b>Quiero acercarme</b></button>
+        <button class="challenge-nav" type="button" data-goto="terreno-durante"><span>02</span><b>Necesito conversar</b></button>
+        <button class="challenge-nav" type="button" data-goto="terreno-cambia"><span>03</span><b>Algo no está fluyendo</b></button>
+        <button class="challenge-nav" type="button" data-goto="limites"><span>04</span><b>Hay incomodidad o un límite</b></button>
+        <button class="challenge-nav" type="button" data-goto="paso-06"><span>05</span><b>Necesito cerrar</b></button>
+        <button class="challenge-nav" type="button" data-goto="terreno-despues"><span>06</span><b>Ya terminó</b></button>
+      </div>
 
-    <div class="route-divider" aria-hidden="true"></div>
+      <details class="nav-details">
+        <summary>Ruta completa de la guía</summary>
+        <div class="nav-details-body">
+          <button class="route-item route-step" data-tab="paso-01" type="button"><span class="step-dot">01</span><span class="route-text"><b>Observa</b><small>Lee el escenario antes de intervenir.</small></span></button>
+          <button class="route-item route-step" data-tab="paso-02" type="button"><span class="step-dot">02</span><span class="route-text"><b>Entra</b><small>Hazte legible para los demás.</small></span></button>
+          <button class="route-item route-step" data-tab="paso-03" type="button"><span class="step-dot">03</span><span class="route-text"><b>Vincúlate</b><small>No empieces extrayendo información.</small></span></button>
+          <button class="route-item route-step" data-tab="paso-04" type="button"><span class="step-dot">04</span><span class="route-text"><b>Conversa</b><small>Pregunta sin convertir en interrogatorio.</small></span></button>
+          <button class="route-item route-step" data-tab="paso-05" type="button"><span class="step-dot">05</span><span class="route-text"><b>Recalcula</b><small>Cuando algo no fluye, cambia de estrategia.</small></span></button>
+          <button class="route-item route-step route-step--limit" data-tab="limites" type="button"><span class="step-dot step-dot--limit">!</span><span class="route-text"><b>Límites</b><small>No toda interacción debe continuar.</small></span></button>
+          <button class="route-item route-step" data-tab="paso-06" type="button"><span class="step-dot">06</span><span class="route-text"><b>Cierra</b><small>Salir también forma parte de la interacción.</small></span></button>
+          <button class="route-item" data-tab="despues" type="button"><span class="dot" aria-hidden="true"></span><span class="route-text"><b>Revisión</b><small>Convierte la interacción en aprendizaje.</small></span></button>
+        </div>
+      </details>
 
-    <div class="route-group standalone">
-      <button class="route-item" data-tab="despues" role="tab" id="tab-despues" aria-controls="despues">
-        <span class="dot" aria-hidden="true"></span>
-        <span class="route-text"><b>Revisión</b><small>Convierte la interacción en aprendizaje</small></span>
-      </button>
-      <button class="route-item" data-tab="facilitacion" role="tab" id="tab-facilitacion" aria-controls="facilitacion">
-        <span class="dot" aria-hidden="true"></span>
-        <span class="route-text"><b>Facilitación</b><small>Guía para quien facilita</small></span>
-      </button>
-    </div>
-
-    <div class="route-divider" aria-hidden="true"></div>
-    <div class="route-label">En terreno<small>Recursos para usar durante la salida</small></div>
-    <div class="route-group terreno">
-      <button class="route-item" data-tab="terreno-antes" role="tab" id="tab-terreno-antes" aria-controls="terreno-antes">
-        <span class="sq">A</span><span class="route-text"><b>Antes</b><small>Leo la situación</small></span>
-      </button>
-      <button class="route-item" data-tab="terreno-durante" role="tab" id="tab-terreno-durante" aria-controls="terreno-durante">
-        <span class="sq">D</span><span class="route-text"><b>Durante</b><small>Escucho y converso</small></span>
-      </button>
-      <button class="route-item" data-tab="terreno-cambia" role="tab" id="tab-terreno-cambia" aria-controls="terreno-cambia">
-        <span class="sq">S</span><span class="route-text"><b>Si algo cambia</b><small>Me adapto</small></span>
-      </button>
-      <button class="route-item" data-tab="terreno-despues" role="tab" id="tab-terreno-despues" aria-controls="terreno-despues">
-        <span class="sq">R</span><span class="route-text"><b>Después</b><small>Registro y aprendo</small></span>
-      </button>
-      <button class="route-item" data-tab="terreno-brujula" role="tab" id="tab-terreno-brujula" aria-controls="terreno-brujula">
-        <span class="sq">✦</span><span class="route-text"><b>Mi brújula</b><small>Guía de bolsillo y autoevaluación</small></span>
-      </button>
-    </div>
-  </nav>
+      <details class="nav-details nav-details-secondary">
+        <summary>Herramientas de apoyo</summary>
+        <div class="nav-details-body">
+          <button class="route-item" data-tab="terreno-brujula" type="button"><span class="sq">✦</span><span class="route-text"><b>Mi brújula</b><small>Guía de bolsillo y autoevaluación.</small></span></button>
+        </div>
+      </details>
+    </nav>
 
   <main class="panels">
 
     <!-- ===================== INICIO ===================== -->
     <section class="panel" id="inicio" data-panel role="tabpanel" aria-labelledby="tab-inicio" tabindex="0">
+
+
       <div class="compass-wrap">
         <svg class="compass" viewBox="0 0 112 112" aria-hidden="true">
           <circle cx="56" cy="56" r="52" fill="none" stroke="var(--rule)" stroke-width="1.4"/>
@@ -528,70 +565,47 @@
       <div class="tagline">observar · entrar · vincularse · conversar · recalcular · cerrar</div>
       <p class="sub">Una guía para consultar antes, durante y después de una interacción — y para usar en la formación de quienes recién comienzan su trabajo de campo en Antropología. </p>
 
-      <div class="two-parts">
-        <div class="part">
-          <span class="when">Parte 1 · para prepararte y revisar</span>
-          <h3>Brújula</h3>
-          <p>La ruta de seis pasos, con técnicas, ejemplos y preguntas para pensar cómo interactúas. Úsala en clases, antes de salir y al volver.</p>
-          <button type="button" class="xlink" data-goto="paso-01">Empezar la ruta</button>
+      <div class="intro-compact" aria-label="Para qué sirve y cómo usar la Brújula">
+        <div class="intro-card">
+          <span class="lbl">Para qué sirve</span>
+          <p>Te ayuda a orientarte cuando aparece un desafío durante una interacción en terreno.</p>
         </div>
-        <div class="part dark">
-          <span class="when">Parte 2 · para llevar a la salida</span>
-          <h3>En terreno</h3>
-          <p>Recursos para acercarte, conversar y desenvolverte con otras personas. Cuatro momentos, frases listas para usar y una ficha para registrar lo ocurrido.</p>
-          <button type="button" class="xlink" data-goto="terreno-antes">Abrir En terreno</button>
+        <div class="intro-card">
+          <span class="lbl">Cómo se usa</span>
+          <p>Identifica lo que está ocurriendo y abre el recurso que más se parece a tu situación.</p>
         </div>
       </div>
 
-      <div class="box info" style="margin-top:24px;">
-        <span class="lbl">Idea central</span>
-        <p>En terreno no necesitas un guion para cada situación. Necesitas herramientas para leer lo que ocurre, reconocer tu posición y decidir cómo participar sin perder de vista a las personas, sus tiempos y el contexto.</p>
-      </div>
-
-      <h3 class="h-sub">Qué vas a poder hacer con esta guía</h3>
-      <ul class="list-plain">
-        <li>Leer una situación de campo antes de intervenir en ella.</li>
-        <li>Presentarte de un modo que reduzca la incertidumbre de la otra persona.</li>
-        <li>Reconocer señales de apertura, duda o límite mientras conversas.</li>
-        <li>Sostener una conversación de campo sin convertirla en interrogatorio.</li>
-        <li>Ajustar tu estrategia cuando una interacción no fluye como esperabas.</li>
-        <li>Cerrar una interacción cuidando el vínculo y registrar lo aprendido.</li>
-      </ul>
-      <p style="font-style:italic; color:var(--ink-soft);">Esta guía sigue la lógica de la práctica reflexiva: observar, actuar, revisar el efecto de esa acción y ajustar. No es una secuencia rígida: es un ciclo al que puedes volver cada vez que la situación cambie.</p>
-
-      <h3 class="h-sub">Cómo usar esta guía</h3>
-      <div class="tbl-wrap">
-        <table class="dtbl">
-          <thead><tr><th>Momento</th><th>Cómo la usas</th></tr></thead>
-          <tbody>
-            <tr><td class="strong">Antes de salir a terreno</td><td>Revisa la ruta completa (a la izquierda / arriba) y repasa los pasos 01 a 03.</td></tr>
-            <tr><td class="strong">Durante el trabajo de campo</td><td>Abre <b>En terreno</b>. Revisa el momento en que estás o abre Mi brújula, el cuadro para guardar como captura en tu teléfono.</td></tr>
-            <tr><td class="strong">Después de cada salida</td><td>Completa la ficha en <b>En terreno · Después</b> y autoevalúate en <b>Mi brújula</b>. La pestaña <b>Revisión</b> te ayuda a analizar lo registrado.</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3 class="h-sub">La ruta completa</h3>
-      <p class="lede">La misma ruta que ves siempre visible junto a este contenido, con el detalle de cada paso.</p>
-      <div class="tbl-wrap">
-        <table class="dtbl">
-          <thead><tr><th>Momento</th><th>Paso</th><th>Pregunta clave</th><th>Acción</th></tr></thead>
-          <tbody>
-            <tr><td>Antes</td><td class="strong">01 · Observa</td><td>¿Qué está pasando?</td><td>Lee el escenario antes de intervenir.</td></tr>
-            <tr><td>Al comenzar</td><td class="strong">02 · Entra</td><td>¿Cómo entro sin irrumpir?</td><td>Hazte legible: quién eres, por qué estás ahí y qué harás.</td></tr>
-            <tr><td>Al comenzar</td><td class="strong">03 · Vincúlate</td><td>¿Qué señales recibo?</td><td>Reconoce ritmos, señales de apertura y límites.</td></tr>
-            <tr><td>Durante</td><td class="strong">04 · Conversa</td><td>¿Cómo acompaño la conversación?</td><td>Pregunta, escucha, profundiza y verifica.</td></tr>
-            <tr><td>Si algo cambia</td><td class="strong">05 · Recalcula</td><td>¿Qué necesita cambiar?</td><td>Ajusta tu forma de participar.</td></tr>
-            <tr><td>En todo momento</td><td class="strong">! · Límites</td><td>¿Debo continuar?</td><td>Pregunta, desacelera, detente o protege.</td></tr>
-            <tr><td>Al terminar</td><td class="strong">06 · Cierra</td><td>¿Cómo salgo cuidando el vínculo?</td><td>Agradece, aclara acuerdos y anota.</td></tr>
-            <tr><td>Después</td><td class="strong">Revisión</td><td>¿Qué aprendí de esta interacción?</td><td>Describe, interpreta y decide qué ajustar.</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="box accent">
-        <span class="lbl">Regla de oro</span>
-        <p>Si la situación cambia, la estrategia también puede cambiar. Observar no es una etapa que ocurre una sola vez: acompaña todo el trabajo de campo.</p>
-      </div>
+      <section class="challenge-hub" id="desafios" aria-labelledby="desafios-title">
+        <div class="hub-kicker">HERRAMIENTAS RÁPIDAS</div>
+        <h2 id="desafios-title">¿Qué necesitas resolver ahora?</h2>
+        <p class="hub-intro">Elige la situación que más se parece a lo que está ocurriendo. La guía te llevará directamente a los recursos que pueden ayudarte.</p>
+        <div class="challenge-grid">
+          <button class="challenge-card" type="button" data-goto="terreno-antes">
+            <span class="challenge-num">01</span><span class="challenge-copy"><b>Quiero acercarme a alguien</b><small>Leer la situación y decidir cómo entrar.</small></span><span class="challenge-arrow">→</span>
+          </button>
+          <button class="challenge-card" type="button" data-goto="terreno-durante">
+            <span class="challenge-num">02</span><span class="challenge-copy"><b>Necesito iniciar o sostener la conversación</b><small>Presentarme, preguntar, escuchar y profundizar.</small></span><span class="challenge-arrow">→</span>
+          </button>
+          <button class="challenge-card" type="button" data-goto="terreno-cambia">
+            <span class="challenge-num">03</span><span class="challenge-copy"><b>La interacción no está fluyendo</b><small>Adaptarme cuando algo cambia o no resulta como esperaba.</small></span><span class="challenge-arrow">→</span>
+          </button>
+          <button class="challenge-card alert" type="button" data-goto="limites">
+            <span class="challenge-num">04</span><span class="challenge-copy"><b>Noto incomodidad o aparece un límite</b><small>Reconocer cuándo preguntar, desacelerar o detenerme.</small></span><span class="challenge-arrow">→</span>
+          </button>
+          <button class="challenge-card" type="button" data-goto="paso-06">
+            <span class="challenge-num">05</span><span class="challenge-copy"><b>No sé cómo cerrar la interacción</b><small>Agradecer, aclarar acuerdos y salir cuidando el vínculo.</small></span><span class="challenge-arrow">→</span>
+          </button>
+          <button class="challenge-card" type="button" data-goto="terreno-despues">
+            <span class="challenge-num">06</span><span class="challenge-copy"><b>La interacción ya terminó</b><small>Registrar lo ocurrido y aprender de la experiencia.</small></span><span class="challenge-arrow">→</span>
+          </button>
+        </div>
+        <div class="hub-secondary">
+          <span>También puedes usar la guía de otra manera</span>
+          <button type="button" class="hub-link" data-goto="paso-01">Ver la ruta completa</button>
+          <button type="button" class="hub-link" data-goto="terreno-brujula">Abrir Mi brújula</button>
+        </div>
+      </section>
     </section>
 
     <!-- ===================== PASO 01 ===================== -->
@@ -827,54 +841,6 @@
     </section>
 
     <!-- ===================== FACILITACIÓN ===================== -->
-    <section class="panel" id="facilitacion" data-panel hidden role="tabpanel" aria-labelledby="tab-facilitacion" tabindex="0">
-      <div class="kicker">Para quien facilita</div>
-      <h2 class="h-section">Guía breve para el uso de Brújula en clases</h2>
-      <div class="facilit">
-        <p>Esta guía puede acompañar tanto un trabajo de campo individual como una asignatura de metodología. Si te toca facilitar su uso en un curso, esta secuencia funciona antes y después de la salida a terreno.</p>
-
-        <h3 class="h-sub">Antes de la salida · ~20 minutos</h3>
-        <div class="tbl-wrap">
-          <table class="dtbl">
-            <thead><tr><th>Momento</th><th>Qué hacer</th></tr></thead>
-            <tbody>
-              <tr><td class="strong">Problematiza</td><td>Pide que recuerden una situación en la que no supieron cómo acercarse a alguien. ¿Qué hicieron?</td></tr>
-              <tr><td class="strong">Diálogo</td><td>Presenta la ruta completa (los 6 pasos) y modela en voz alta uno de ellos — por ejemplo, la Presentación en tres capas — con un caso real o inventado.</td></tr>
-              <tr><td class="strong">Práctica breve</td><td>En parejas, que ensayen su propia presentación en tres capas, una vez con tú y otra con usted, y se den una retroalimentación de un minuto.</td></tr>
-              <tr><td class="strong">Sintetiza</td><td>Cierra recordando que la brújula no reemplaza el juicio en terreno: orienta cuando algo cambia. Pide que guarden Mi brújula como captura en el teléfono antes de salir.</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h3 class="h-sub">Después de la salida · ~30 minutos</h3>
-        <div class="tbl-wrap">
-          <table class="dtbl">
-            <thead><tr><th>Momento</th><th>Qué hacer</th></tr></thead>
-            <tbody>
-              <tr><td class="strong">Diálogo</td><td>En parejas o grupos pequeños, que completen la ficha de registro (En terreno · Después) sobre una interacción real de esa salida y se autoevalúen en Mi brújula. Pueden copiar o imprimir ambas para entregarlas.</td></tr>
-              <tr><td class="strong">Sintetiza</td><td>Pide que compartan un aprendizaje y un ajuste — no el relato completo, solo eso.</td></tr>
-              <tr><td class="strong">Avanza</td><td>Cierra con una pregunta abierta: ¿qué paso de la brújula necesitas reforzar en la próxima salida?</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h3 class="h-sub">Rúbrica formativa</h3>
-        <p>Para observar o evaluar de forma formativa, puedes usar los mismos seis pasos como criterios, en lugar de crear una pauta nueva.</p>
-        <div class="tbl-wrap">
-          <table class="dtbl">
-            <thead><tr><th>Paso</th><th>Inicial</th><th>En desarrollo</th><th>Logrado</th></tr></thead>
-            <tbody>
-              <tr><td class="strong">Observa</td><td>Interviene sin mirar el contexto.</td><td>Nota algunos elementos del escenario.</td><td>Lee espacio, actores, actividad y su posición antes de actuar.</td></tr>
-              <tr><td class="strong">Entra</td><td>Se presenta de forma confusa o excesiva.</td><td>Se presenta, pero sin verificar si es buen momento.</td><td>Se presenta con claridad y pregunta si es buen momento.</td></tr>
-              <tr><td class="strong">Vincúlate</td><td>Extrae información sin reconocer el ritmo.</td><td>Reconoce señales, pero no ajusta su ritmo.</td><td>Ajusta su entrada según las señales de apertura o límite.</td></tr>
-              <tr><td class="strong">Conversa</td><td>Sostiene la conversación solo con preguntas.</td><td>Escucha, pero rara vez profundiza en lo dicho.</td><td>Alterna apertura, escucha, profundización y verificación.</td></tr>
-              <tr><td class="strong">Recalcula</td><td>Se detiene o insiste sin ajustar estrategia.</td><td>Reconoce la dificultad, pero no siempre actúa.</td><td>Ajusta su estrategia y la registra como información válida.</td></tr>
-              <tr><td class="strong">Cierra</td><td>Sale sin agradecer ni aclarar acuerdos.</td><td>Agradece, pero no registra después.</td><td>Agradece, aclara, acuerda próximos pasos y registra al salir.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
 
     <!-- ===================== EN TERRENO · ANTES ===================== -->
     <section class="panel terreno" id="terreno-antes" data-panel hidden role="tabpanel" aria-labelledby="tab-terreno-antes" tabindex="0">
@@ -1045,7 +1011,7 @@
 (function(){
   "use strict";
 
-  var TABS = ['inicio','paso-01','paso-02','paso-03','paso-04','paso-05','limites','paso-06','despues','facilitacion','terreno-antes','terreno-durante','terreno-cambia','terreno-despues','terreno-brujula'];
+  var TABS = ['inicio','paso-01','paso-02','paso-03','paso-04','paso-05','limites','paso-06','despues','terreno-antes','terreno-durante','terreno-cambia','terreno-despues','terreno-brujula'];
   var ALIAS = { consulta:'terreno-brujula' };
   var items = Array.prototype.slice.call(document.querySelectorAll('.route-item'));
   var panels = {};
@@ -1255,6 +1221,18 @@
     });
   });
   if(bot) renderBot();
+
+
+  // ---- acceso rápido: volver al selector de desafíos ----
+  TABS.forEach(function(t){
+    if(t === 'inicio') return;
+    var p = panels[t];
+    if(!p) return;
+    var w = document.createElement('div'); w.className = 'return-hub-wrap no-print';
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'return-hub'; b.textContent = '← Resolver otro desafío';
+    b.addEventListener('click', function(){ activate('inicio'); setTimeout(function(){ var h=document.getElementById('desafios'); if(h) h.scrollIntoView({behavior:'smooth',block:'start'}); },250); });
+    w.appendChild(b); p.insertBefore(w, p.firstChild);
+  });
 
 })();
 </script>
